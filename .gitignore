@@ -1,5 +1,9 @@
+logs/
+api/logs/
 /target/
 !.mvn/wrapper/maven-wrapper.jar
+mvnw
+mvnw.cmd
 
 # Other files and folders
 .settings/
