@@ -28,8 +28,8 @@ spring:
       min-idle: 2
       max-active: 50
       max-wait: 30000
-      #stat-view-servlet:
-     #   login-username: admin
-   #     login-password: flerken
-  #main:
-  #  allow-bean-definition-overriding: true
+      stat-view-servlet:
+        login-username: admin
+        login-password: flerken
+  main:
+    allow-bean-definition-overriding: true
