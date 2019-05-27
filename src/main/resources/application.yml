@@ -1,0 +1,35 @@
+server:
+  compression:
+    enabled: true
+  tomcat:
+    basedir: logs
+    accesslog:
+      enabled: true
+      directory: .
+    max-threads: 3000
+  servlet:
+    session:
+      timeout: 6h
+#      timeout: 60
+      cookie:
+        name: FLERKEN_SID
+spring:
+  profiles:
+    active: test
+  application:
+    name: api
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  datasource:
+    druid:
+      initial-size: 2
+      min-idle: 2
+      max-active: 50
+      max-wait: 30000
+      #stat-view-servlet:
+     #   login-username: admin
+   #     login-password: flerken
+  #main:
+  #  allow-bean-definition-overriding: true

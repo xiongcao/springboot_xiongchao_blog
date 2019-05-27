@@ -1,0 +1,19 @@
+server:
+  port: 3000
+spring:
+  profiles: test
+  datasource:
+    url: jdbc:mysql://192.168.1.21/flerken
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+oss:
+  endpoint: http://oss-cn-hangzhou.aliyuncs.com
+  accessKeyId: LTAInwKTTHGeVRyv
+  accessKeySecret: UEie2RYgCliXNRHFVTExOAwyiinnFH
+  bucketName: flerken-test
+swagger:
+  enable: false

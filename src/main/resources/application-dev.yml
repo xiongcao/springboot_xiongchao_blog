@@ -1,0 +1,20 @@
+server:
+  port: 80
+spring:
+  profiles: dev
+  datasource:
+#    url: jdbc:mysql://localhost/flerken
+    url: jdbc:mysql://localhost/flerken?serverTimezone=GMT%2B8
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+oss:
+  endpoint: http://oss-cn-shanghai.aliyuncs.com
+  accessKeyId: LTAI9eroGKyC6Ep6
+  accessKeySecret: imhRjpZKK0U1lKsDDoO3JnfCOvTMmD
+  bucketName: flerken-manage
+swagger:
+  enable: true

@@ -1,0 +1,23 @@
+server:
+  port: 443
+  ssl:
+    key-store: classpath:cert-prod/2194254.pfx
+    key-store-password: AVW4nEqb
+    key-store-type: PKCS12
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://rdsm4j6k6ru4bh6gu6uebo.mysql.rds.aliyuncs.com:3306/flerken?characterEncoding=utf-8&useSSL=false
+    username: flerken
+    password: KxList_201678
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+oss:
+  endpoint: http://oss-cn-hangzhou.aliyuncs.com
+  accessKeyId: LTAInwKTTHGeVRyv
+  accessKeySecret: UEie2RYgCliXNRHFVTExOAwyiinnFH
+  bucketName: flerken
+swagger:
+  enable: false
