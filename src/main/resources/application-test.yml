@@ -16,4 +16,4 @@ oss:
   accessKeySecret: UEie2RYgCliXNRHFVTExOAwyiinnFH
   bucketName: flerken-test
 swagger:
-  enable: false
+  enable: true
