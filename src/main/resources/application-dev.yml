@@ -3,8 +3,7 @@ server:
 spring:
   profiles: dev
   datasource:
-#    url: jdbc:mysql://localhost/flerken
-    url: jdbc:mysql://localhost/flerken?serverTimezone=GMT%2B8
+    url: jdbc:mysql://localhost/xiongchao_blog?serverTimezone=GMT%2B8
     username: root
     password: 123456
   jpa:
