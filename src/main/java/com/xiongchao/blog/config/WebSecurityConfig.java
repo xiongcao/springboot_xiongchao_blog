@@ -46,7 +46,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .anyRequest().permitAll()
                 .and()
-//                .formLogin().loginPage("/admin/signIn").defaultSuccessUrl("/admin/signInSuccess")
+                .formLogin().loginPage("/user/signIn").defaultSuccessUrl("/user/signInSuccess")
 //                .antMatchers(HttpMethod.GET, "/admin/signIn")
 //                .permitAll()
 //                .antMatchers(HttpMethod.POST, "/admin")
