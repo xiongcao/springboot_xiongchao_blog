@@ -83,7 +83,7 @@ public class User extends BaseEntity {
     private String role;
 
     @ApiModelProperty(value = "生日")
-    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(timezone = "GMT+8", pattern = "yyyy-MM-dd")
     private Date birthday;
 
     @ApiModelProperty("性别 0：男 1：女 2：未知")
