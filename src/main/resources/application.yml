@@ -13,6 +13,7 @@ server:
 #      timeout: 60
       cookie:
         name: FLERKEN_SID
+  file-path: C:\project\springboot_xiongchao_blog\src\main\resources\static\
 spring:
   profiles:
     active: test
@@ -33,3 +34,5 @@ spring:
         login-password: flerken
   main:
     allow-bean-definition-overriding: true
+  mvc:
+    static-path-pattern: /**

@@ -14,11 +14,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.Date;
 
-@Api(description = "后台用户管理")
+@Api(description = "用户管理")
 @RestController
 @RequestMapping("user")
 public class UserController {
@@ -28,16 +30,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @GetMapping("findUser")
-    @ApiOperation("根据用户名称查询用户信息")
-    public BaseResult findUserByUserName(@RequestParam(value = "name") String name) {
-        User user = userService.findByUsername(name);
-        if (user == null) {
-            return BaseResult.failure("用户不存在");
-        }
-        return BaseResult.success(user);
-    }
 
     @PostMapping("signIn")
     @ApiOperation("管理员账号密码登录swagger")
@@ -62,7 +54,7 @@ public class UserController {
 
     @GetMapping("loginIn")
     @ApiOperation("管理员账号密码登录")
-    public BaseResult signIn(@RequestParam("username") String username,
+    public BaseResult loginIn(@RequestParam("username") String username,
                              @RequestParam("password") String password,
                              HttpServletRequest request) {
         User user = userService.findByUsername(username);
@@ -146,6 +138,41 @@ public class UserController {
         request.getSession().setAttribute(Constants.ADMIN_NAME, user.getName());
         logger.info("管理员:{} 登录成功 登录IP:{}", user.getName(), IPUtil.getClientIP(request));
         return BaseResult.success(user);
+    }
+
+    @GetMapping("findById")
+    @ApiOperation("根据用户Id查询用户信息")
+    public BaseResult findById(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                                    @RequestParam("id") Integer id, HttpServletRequest request) {
+        User user = userService.findById(id).orElseThrow(() ->  new RuntimeException("用户不存在"));
+        return BaseResult.success(user);
+    }
+
+    @PostMapping("save")
+    @ApiOperation("保存用户信息")
+    public BaseResult save(@Valid @RequestBody User user) {
+        userService.save(user);
+        return BaseResult.success("添加成功");
+    }
+
+    @PostMapping("findUserByName")
+    @ApiOperation("根据用户名查询是否已存在该用户")
+    public BaseResult findUserByName(@RequestParam("name") String name) {
+        User user = userService.findByUsername(name);
+        if (null == user) {
+            return BaseResult.failure("该用户名尚未注册");
+        }
+        return BaseResult.success("该用户名已注册");
+    }
+
+    @PostMapping("findUserByPhone")
+    @ApiOperation("根据用户名查询是否已存在该用户")
+    public BaseResult findUserByPhone(@RequestParam("phone") String phone, HttpServletRequest request) {
+        User user = userService.findByPhoneNumber(phone);
+        if (null == user) {
+            return BaseResult.failure("该手机号尚未注册");
+        }
+        return BaseResult.success("该手机号已注册");
     }
 
 }

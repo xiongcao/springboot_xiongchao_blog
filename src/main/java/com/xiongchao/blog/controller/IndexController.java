@@ -3,6 +3,7 @@ package com.xiongchao.blog.controller;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xiongchao.blog.bean.BaseResult;
+import com.xiongchao.blog.bean.Constants;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -40,18 +41,8 @@ public class IndexController {
 
     @GetMapping("swagger")
     public String swagger(HttpSession session) {
-//        Admin user = userService.findByPhoneNumber("15727055403");
-//        Admin user = userService.findByPhoneNumber("18040540452");
-//        session.setAttribute(Constants.ADMIN_ID, user.getId());
-//        session.setAttribute(Constants.ADMIN_ID, user.getId());
-//        session.setAttribute(Constants.USER, user);
-//        session.setAttribute(Constants.ADMIN_ID, 1);  //  开启我
-//        session.setAttribute(Constants.ADMIN_NAME, "super");  //  开启我
-//        session.setAttribute(Constants.ADMIN_ID, 1);
-//        session.setAttribute(Constants.ADMIN_NAME, "super");
-//        session.setAttribute(Constants.ADMIN_ID, 5);
-//        session.setAttribute(Constants.ADMIN_NAME, "xiongchao");
-//        session.setAttribute(Constants.USER_ID, 2); //  开启我
+        session.setAttribute(Constants.ADMIN_ID, 1);
+        session.setAttribute(Constants.ADMIN_NAME, "super");
 //        session.setAttribute(Constants.WX_MP_USER, new WxMpUser());
         return "redirect:/swagger-ui.html";
     }
