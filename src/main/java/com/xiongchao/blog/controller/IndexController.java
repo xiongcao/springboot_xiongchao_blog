@@ -41,8 +41,8 @@ public class IndexController {
 
     @GetMapping("swagger")
     public String swagger(HttpSession session) {
-        session.setAttribute(Constants.ADMIN_ID, 1);
-        session.setAttribute(Constants.ADMIN_NAME, "super");
+        session.setAttribute(Constants.ADMIN_ID, 2);
+        session.setAttribute(Constants.ADMIN_NAME, "xiongchao");
 //        session.setAttribute(Constants.WX_MP_USER, new WxMpUser());
         return "redirect:/swagger-ui.html";
     }

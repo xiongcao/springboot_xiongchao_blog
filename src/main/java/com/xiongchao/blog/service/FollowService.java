@@ -1,9 +1,8 @@
 package com.xiongchao.blog.service;
 
-import com.xiongchao.blog.bean.BasePage;
+import com.xiongchao.blog.bean.Follow;
 import com.xiongchao.blog.bean.PageWithSearch;
-import com.xiongchao.blog.bean.User;
-import com.xiongchao.blog.dao.UserRepository;
+import com.xiongchao.blog.dao.FollowRepository;
 import com.xiongchao.blog.util.SqlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -20,41 +19,42 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+public class FollowService {
 
     @Autowired
     private EntityManager em;
 
-    public User findByUsername (String name) {
-        return userRepository.findByName(name);
+    @Autowired
+    private FollowRepository followRepository;
+
+    public Follow saveFollow(Follow follow){
+        return followRepository.save(follow);
     }
 
-    public User save(User user){
-        return userRepository.save(user);
+    public List<Follow> findFollowAll(Integer userId){
+        return followRepository.findByUserId(userId);
     }
 
-    public  User findByPhoneNumber(String phone) {
-        return userRepository.findByPhoneNumber(phone);
+    public Optional<Follow> findById(Integer id){
+        return followRepository.findById(id);
     }
 
-    public Optional<User> findById(Integer id) {
-        return userRepository.findById(id);
+    public Follow findByUserIdAndFollowUserId(Integer userId, Integer followUserId){
+        return followRepository.findByUserIdAndFollowUserId(userId, followUserId);
     }
 
-    public Page<User> findUserAll(PageWithSearch pageWithSearch, Integer userId){
+    public Page<Follow> findFollowAll(PageWithSearch pageWithSearch, Integer userId, Integer status){
         String field = pageWithSearch.getField();
         String value = pageWithSearch.getValue();
         Integer page = pageWithSearch.defaultPage(0);
         Integer size = pageWithSearch.defaultSize(20);
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" select " + SqlUtil.sqlGenerate("u", User.class) + " from user u where 1 = 1 ");
-        if (null != userId) sb.append(" and u.admin_id = " + userId + " "); // 超管查询所有用户信息
+        sb.append(" select " + SqlUtil.sqlGenerate("u", Follow.class) + " from follow u where u.status = " + status + " ");
+        if (null != userId) sb.append(" and u.user_id = " + userId + " "); // 超管查询所有用户信息
 
         if (!StringUtils.isEmpty(field) && !StringUtils.isEmpty(value)) {   // 搜索条件
-            sb.append(" and u." + SqlUtil.camelToUnderline(field) + " like '"+ value +"' ");
+            sb.append(" and u." + SqlUtil.camelToUnderline(field) + " like '%"+ value +"%' ");
         }
         sb.append(" ORDER BY u.created_date DESC");
 
@@ -63,31 +63,30 @@ public class UserService {
         query.setMaxResults(size);
 
         List<Object> result = query.getResultList();
-        List<User> users = new ArrayList<>();
+        List<Follow> follows = new ArrayList<>();
         for (Object o : result) {
             Object[] obj = (Object[]) o;
-            users.add(SqlUtil.toBean(obj, User.class));
+            follows.add(SqlUtil.toBean(obj, Follow.class));
         }
         if (result.isEmpty()) {
             return new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
         }
 
-        return new PageImpl<>(users, PageRequest.of(page, size), findListCount(pageWithSearch, userId));
-
+        return new PageImpl<>(follows, PageRequest.of(page, size), findListCount(pageWithSearch, userId, status));
     }
 
-    public Long findListCount(PageWithSearch pageWithSearch, Integer userId) {
+    public Long findListCount(PageWithSearch pageWithSearch, Integer userId, Integer status) {
         String field = pageWithSearch.getField();
         String value = pageWithSearch.getValue();
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(*) from user u where u.user_id = " + userId + " ");
+        sb.append(" select count(*) from follow u where u.user_id = " + userId + " and u.status = " + status + " ");
         if (!StringUtils.isEmpty(field) && !StringUtils.isEmpty(value)) {//无搜索条件
-            sb.append(" and u." + SqlUtil.camelToUnderline(field) + " like '"+ value +"' ");
+            sb.append(" and u." + SqlUtil.camelToUnderline(field) + " like '%"+ value +"%' ");
         }
-
         Query query = em.createNativeQuery(sb.toString());
         List<Object> objects = query.getResultList();
         return Long.parseLong(objects.get(0).toString());
     }
+
 }
