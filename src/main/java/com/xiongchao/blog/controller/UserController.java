@@ -150,7 +150,8 @@ public class UserController {
 
     @PostMapping("save")
     @ApiOperation("保存用户信息")
-    public BaseResult save(@Valid @RequestBody User user) {
+    public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                           @Valid @RequestBody User user) {
         userService.save(user);
         return BaseResult.success("添加成功");
     }
@@ -167,7 +168,7 @@ public class UserController {
 
     @PostMapping("findUserByPhone")
     @ApiOperation("根据用户名查询是否已存在该用户")
-    public BaseResult findUserByPhone(@RequestParam("phone") String phone, HttpServletRequest request) {
+    public BaseResult findUserByPhone(@RequestParam("phone") String phone) {
         User user = userService.findByPhoneNumber(phone);
         if (null == user) {
             return BaseResult.failure("该手机号尚未注册");
