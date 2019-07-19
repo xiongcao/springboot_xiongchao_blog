@@ -24,4 +24,6 @@ public class Constants {
 
     //信息不一致退款文案
     public static final String REFUND_MESSAGE = "抱歉，支付人姓名和收件人姓名不符";
+
+    public static final String ROLE = "role";
 }

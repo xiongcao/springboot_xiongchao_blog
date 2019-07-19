@@ -30,7 +30,12 @@ public class TagController {
     @PostMapping("save")
     @ApiOperation("保存标签")
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                           @ApiIgnore @SessionAttribute(Constants.ROLE) String role,
                            @Valid @RequestBody Tag tag) {
+        if (role.equals("ROLE_SUPER")) {
+            return BaseResult.failure(1, "没有权限");
+        }
+        tag.setUserId(adminId);
         if(tag.getId() != null){
             tagService.findById(tag.getId()).orElseThrow(()-> new RuntimeException("没有此标签"));
         }
@@ -42,7 +47,7 @@ public class TagController {
     @ApiOperation("修改状态")
     public BaseResult updateStatus(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                    @ApiParam("ID") @PathVariable("id") Integer id,
-                                   @ApiParam("0:删除;1:正常;") @PathVariable("status") Integer status) {
+                                   @ApiParam("-1:删除;0:隐藏;1:正常;") @PathVariable("status") Integer status) {
         Tag tag = tagService.findById(id).orElseThrow(()-> new RuntimeException("没有此标签"));
         tag.setStatus(status);
         tagService.save(tag);

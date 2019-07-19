@@ -20,12 +20,16 @@ public class Tag extends BaseEntity {
     private String name;
 
 
-    @ApiModelProperty("状态 0：删除 1：正常")
+    @ApiModelProperty("排序序号")
+    @Column(columnDefinition = "int(11) default 1")
+    private Integer rank;
+
+    @ApiModelProperty("状态 0：隐藏 1：正常 -1：删除")
     @Column(columnDefinition = "int(11) default 1")
     private Integer status;
 
     @ApiModelProperty("用户ID")
-    @NotNull(message = "用户id不能为空")
+//    @NotNull(message = "用户id不能为空")
     @Column(columnDefinition = "int(11)", nullable = false)
     private Integer userId;
 
@@ -51,5 +55,13 @@ public class Tag extends BaseEntity {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
+
+    public void setRank(Integer rank) {
+        this.rank = rank;
     }
 }
