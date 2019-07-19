@@ -21,7 +21,7 @@ public class TagService {
 
     public List<Tag> findAllByUserIdAndStatus(Integer userId, Integer status){
         if(status == null){
-            return tagRepository.findAllByUserId(userId);
+            return tagRepository.findAllByUserIdAndStatus(userId);
         }
         return tagRepository.findAllByUserIdAndStatus(userId, status);
     }

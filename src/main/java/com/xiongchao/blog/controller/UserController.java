@@ -99,7 +99,7 @@ public class UserController {
         }
         request.getSession().setAttribute(Constants.ADMIN_ID, user.getId());
         request.getSession().setAttribute(Constants.ADMIN_NAME, user.getName());
-
+        request.getSession().setAttribute(Constants.ROLE, user.getRole());
         user.setPasswordAttemptCount(0);
         user.setLockedDate(null);
         userService.save(user);

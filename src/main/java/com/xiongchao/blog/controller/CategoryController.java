@@ -29,7 +29,12 @@ public class CategoryController {
     @PostMapping("save")
     @ApiOperation("保存类型")
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                           @ApiIgnore @SessionAttribute(Constants.ROLE) String role,
                            @Valid @RequestBody Category category) {
+        if (role.equals("ROLE_SUPER")) {
+            return BaseResult.failure(1, "没有权限");
+        }
+        category.setUserId(adminId);
         if(category.getId() != null){
             Category category1 = categoryService.findByIdAndUserId(category.getId(), adminId);
             if (null == category1) {
@@ -43,8 +48,12 @@ public class CategoryController {
     @PostMapping("updateStatus/{id}/{status}")
     @ApiOperation("修改状态")
     public BaseResult updateStatus(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                                   @ApiIgnore @SessionAttribute(Constants.ROLE) String role,
                                    @ApiParam("ID") @PathVariable("id") Integer id,
-                                   @ApiParam("0:删除;1:正常;") @PathVariable("status") Integer status) {
+                                   @ApiParam("-1:删除;0:隐藏;1:正常;") @PathVariable("status") Integer status) {
+        if (role.equals("ROLE_SUPER")) {
+            return BaseResult.failure(1, "没有权限");
+        }
         Category category = categoryService.findById(id).orElseThrow(()-> new RuntimeException("没有此类型"));
         category.setStatus(status);
         categoryService.save(category);

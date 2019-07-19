@@ -21,7 +21,7 @@ public class CategoryService {
 
     public List<Category> findAllByUserIdAndStatus(Integer userId, Integer status){
         if(status == null){
-            return categoryRepository.findAllByUserId(userId);
+            return categoryRepository.findAllByUserIdAndStatus(userId);
         }
         return categoryRepository.findAllByUserIdAndStatus(userId, status);
     }
