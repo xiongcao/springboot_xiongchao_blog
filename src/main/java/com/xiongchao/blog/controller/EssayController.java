@@ -37,11 +37,11 @@ public class EssayController {
             }
         }
         List<Tag> tags = essayDTO.getTags();
-        if (tags != null && !tags.isEmpty()) {
+        if (tags == null || tags.isEmpty()) {
             return BaseResult.failure("缺少标签参数");
         }
-        List<Category> categories = essayDTO.getCategories();
-        if (categories != null && !categories.isEmpty()) {
+        List<Category> categories = essayDTO.getCategorys();
+        if (categories == null || categories.isEmpty()) {
             return BaseResult.failure("缺少类型参数");
         }
         essayDTO.setUserId(adminId);
@@ -68,5 +68,12 @@ public class EssayController {
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                    @ApiParam("1公开 2：私密 3：草稿 0：删除;") @RequestParam(value = "status", required = false) Integer status) {
         return BaseResult.success(essayService.findAllByUserIdAndStatus(adminId, status));
+    }
+
+    @GetMapping("detail/{id}")
+    @ApiOperation("根据文章id查询文章信息")
+    public BaseResult detail(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                             @ApiParam("ID") @PathVariable("id") Integer id) {
+        return BaseResult.success(essayService.findByIdAndUserId(id, adminId));
     }
 }

@@ -10,7 +10,7 @@ public class EssayDTO extends Essay {
 
     private List<Tag> tags;
 
-    private List<Category> categories;
+    private List<Category> categorys;
 
     public List<Tag> getTags() {
         return tags;
@@ -20,11 +20,11 @@ public class EssayDTO extends Essay {
         this.tags = tags;
     }
 
-    public List<Category> getCategories() {
-        return categories;
+    public List<Category> getCategorys() {
+        return categorys;
     }
 
-    public void setCategories(List<Category> categories) {
-        this.categories = categories;
+    public void setCategorys(List<Category> categorys) {
+        this.categorys = categorys;
     }
 }
