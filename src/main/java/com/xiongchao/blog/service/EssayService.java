@@ -1,17 +1,14 @@
 package com.xiongchao.blog.service;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.xiongchao.blog.DTO.EssayDTO;
 import com.xiongchao.blog.bean.*;
-import com.xiongchao.blog.dao.EssayCategoryMappingRepository;
-import com.xiongchao.blog.dao.EssayRepository;
-import com.xiongchao.blog.dao.EssayTagMappingRepository;
+import com.xiongchao.blog.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -19,6 +16,12 @@ public class EssayService {
 
     @Autowired
     private EssayRepository essayRepository;
+
+    @Autowired
+    private TagRepository tagRepository;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @Autowired
     private EssayTagMappingRepository essayTagMappingRepository;
@@ -55,11 +58,21 @@ public class EssayService {
         }
     }
 
-    public List<Essay> findAllByUserIdAndStatus(Integer userId, Integer status){
+    public List<EssayDTO> findAllByUserIdAndStatus(Integer userId, Integer status){
+        List<EssayDTO> essayDTOS = new ArrayList<>();
+        List<Essay> essays;
         if(status == null){
-            return essayRepository.findAllByUserId(userId);
+            essays = essayRepository.findAllByUserIdNotDelete(userId);
+        } else {
+            essays = essayRepository.findByUserIdAndStatusOrderByRankDesc(userId, status);
         }
-        return essayRepository.findAllByUserIdAndStatus(userId, status);
+        for (Essay essay: essays) {
+            EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay), EssayDTO.class);
+            essayDTO.setTags(tagRepository.findListByEssayId(essay.getId()));
+            essayDTO.setCategories(categoryRepository.findListByEssayId(essay.getId()));
+            essayDTOS.add(essayDTO);
+        }
+        return essayDTOS;
     }
 
     public Optional<Essay> findById(Integer id){

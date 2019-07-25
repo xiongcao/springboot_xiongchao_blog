@@ -1,9 +1,7 @@
 package com.xiongchao.blog.controller;
 
 import com.xiongchao.blog.DTO.EssayDTO;
-import com.xiongchao.blog.bean.BaseResult;
-import com.xiongchao.blog.bean.Constants;
-import com.xiongchao.blog.bean.Essay;
+import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.service.EssayService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -15,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Api(description = "文章管理")
 @RestController
@@ -36,6 +35,14 @@ public class EssayController {
             if (null == essay) {
                 return BaseResult.failure("该文章不存在或非本人文章");
             }
+        }
+        List<Tag> tags = essayDTO.getTags();
+        if (tags != null && !tags.isEmpty()) {
+            return BaseResult.failure("缺少标签参数");
+        }
+        List<Category> categories = essayDTO.getCategories();
+        if (categories != null && !categories.isEmpty()) {
+            return BaseResult.failure("缺少类型参数");
         }
         essayDTO.setUserId(adminId);
         essayService.save(essayDTO);
@@ -59,7 +66,7 @@ public class EssayController {
     @GetMapping("findAll")
     @ApiOperation("查询所有文章")
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
-                                   @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status) {
+                                   @ApiParam("1公开 2：私密 3：草稿 0：删除;") @RequestParam(value = "status", required = false) Integer status) {
         return BaseResult.success(essayService.findAllByUserIdAndStatus(adminId, status));
     }
 }

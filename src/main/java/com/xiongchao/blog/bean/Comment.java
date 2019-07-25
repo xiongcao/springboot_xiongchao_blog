@@ -37,7 +37,6 @@ public class Comment extends BaseEntity {
     private Integer essayId;
 
     @ApiModelProperty("评论者ID")
-    @NotNull(message = "评论者id不能为空")
     @Column(columnDefinition = "int(11)", nullable = false)
     private Integer userId;
 

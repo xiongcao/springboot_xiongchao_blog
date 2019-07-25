@@ -1,7 +1,6 @@
 package com.xiongchao.blog.dao;
 
 
-import com.xiongchao.blog.bean.Category;
 import com.xiongchao.blog.bean.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -37,4 +36,13 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
      */
     @Query(value = "select * from tag c WHERE c.user_id = ? and c.status <> -1 ORDER BY c.rank DESC", nativeQuery = true)
     List<Tag> findAllByUserIdAndStatus(Integer userId);
+
+
+    /**
+     * 根据文章ID查询所有标签
+     * @param essayId
+     * @return
+     */
+    @Query(value = "SELECT t.* FROM tag t LEFT JOIN essay_tag_mapping et ON t.id = et.tag_id WHERE et.essay_id = ? AND t.status <> 0", nativeQuery = true)
+    List<Tag> findListByEssayId(Integer essayId);
 }
