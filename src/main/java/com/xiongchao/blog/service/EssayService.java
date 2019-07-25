@@ -48,10 +48,10 @@ public class EssayService {
         }
 
         // 保存类型
-        List<Category> categories = essayDTO.getCategories();
-        if(categories != null && !categories.isEmpty()){
+        List<Category> categorys = essayDTO.getCategorys();
+        if(categorys != null && !categorys.isEmpty()){
             List<EssayCategoryMapping> essayCategoryMappings = new ArrayList<>();
-            for(Category category : categories) {
+            for(Category category : categorys) {
                 essayCategoryMappings.add(new EssayCategoryMapping(essay.getId(), category.getId()));
             }
             essayCategoryMappingRepository.saveAll(essayCategoryMappings);
@@ -69,7 +69,7 @@ public class EssayService {
         for (Essay essay: essays) {
             EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay), EssayDTO.class);
             essayDTO.setTags(tagRepository.findListByEssayId(essay.getId()));
-            essayDTO.setCategories(categoryRepository.findListByEssayId(essay.getId()));
+            essayDTO.setCategorys(categoryRepository.findListByEssayId(essay.getId()));
             essayDTOS.add(essayDTO);
         }
         return essayDTOS;
@@ -79,8 +79,14 @@ public class EssayService {
         return essayRepository.findById(id);
     }
 
-    public  Essay findByIdAndUserId(Integer id, Integer userId){
-        return essayRepository.findByIdAndUserId(id, userId);
+    public  EssayDTO findByIdAndUserId(Integer id, Integer userId){
+        Essay essay = essayRepository.findByIdAndUserId(id, userId);
+        EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay), EssayDTO.class);
+        List<Tag> tags = tagRepository.findListByEssayId(essay.getId());
+        List<Category> categorys = categoryRepository.findListByEssayId(essay.getId());
+        essayDTO.setTags(tags);
+        essayDTO.setCategorys(categorys);
+        return essayDTO;
     }
 
 }

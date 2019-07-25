@@ -30,4 +30,8 @@ public class TagService {
         return tagRepository.findById(id);
     }
 
+    public List<Tag> findListByEssayId(Integer essayId) {
+        return tagRepository.findListByEssayId(essayId);
+    }
+
 }
