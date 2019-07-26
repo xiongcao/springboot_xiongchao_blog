@@ -34,28 +34,24 @@ public class EssayService {
     }
 
     public void save(EssayDTO essayDTO){
+        List<Tag> tags = essayDTO.getTags();
+        List<Category> categorys = essayDTO.getCategorys();
         Essay essay = JSON.parseObject(JSON.toJSONString(essayDTO), Essay.class);
         essay = essayRepository.save(essay);
 
         // 保存标签
-        List<Tag> tags = essayDTO.getTags();
-        if(tags != null && !tags.isEmpty()){
-            List<EssayTagMapping> essayTagMappings = new ArrayList<>();
-            for(Tag tag : tags) {
-                essayTagMappings.add(new EssayTagMapping(essay.getId(), tag.getId()));
-            }
-            essayTagMappingRepository.saveAll(essayTagMappings);
+        List<EssayTagMapping> essayTagMappings = new ArrayList<>();
+        for(Tag tag : tags) {
+            essayTagMappings.add(new EssayTagMapping(essay.getId(), tag.getId()));
         }
+        essayTagMappingRepository.saveAll(essayTagMappings);
 
         // 保存类型
-        List<Category> categorys = essayDTO.getCategorys();
-        if(categorys != null && !categorys.isEmpty()){
-            List<EssayCategoryMapping> essayCategoryMappings = new ArrayList<>();
-            for(Category category : categorys) {
-                essayCategoryMappings.add(new EssayCategoryMapping(essay.getId(), category.getId()));
-            }
-            essayCategoryMappingRepository.saveAll(essayCategoryMappings);
+        List<EssayCategoryMapping> essayCategoryMappings = new ArrayList<>();
+        for(Category category : categorys) {
+            essayCategoryMappings.add(new EssayCategoryMapping(essay.getId(), category.getId()));
         }
+        essayCategoryMappingRepository.saveAll(essayCategoryMappings);
     }
 
     public List<EssayDTO> findAllByUserIdAndStatus(Integer userId, Integer status){
@@ -79,7 +75,7 @@ public class EssayService {
         return essayRepository.findById(id);
     }
 
-    public  EssayDTO findByIdAndUserId(Integer id, Integer userId){
+    public EssayDTO findByIdAndUserId(Integer id, Integer userId){
         Essay essay = essayRepository.findByIdAndUserId(id, userId);
         EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay), EssayDTO.class);
         List<Tag> tags = tagRepository.findListByEssayId(essay.getId());

@@ -2,8 +2,10 @@ package com.xiongchao.blog.service;
 
 import com.xiongchao.blog.bean.Category;
 import com.xiongchao.blog.dao.CategoryRepository;
+import com.xiongchao.blog.dao.EssayCategoryMappingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +16,9 @@ public class CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private EssayCategoryMappingRepository essayCategoryMappingRepository;
 
     public Category save(Category category){
         return categoryRepository.save(category);
@@ -32,6 +37,11 @@ public class CategoryService {
 
     public Category findByIdAndUserId(Integer id, Integer userId){
         return categoryRepository.findByIdAndUserId(id, userId);
+    }
+
+    @Transactional
+    public Integer deleteByEssayId(Integer essayId){
+        return essayCategoryMappingRepository.deleteByEssayId(essayId);
     }
 
 }

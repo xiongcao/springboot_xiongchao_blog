@@ -2,7 +2,9 @@ package com.xiongchao.blog.controller;
 
 import com.xiongchao.blog.DTO.EssayDTO;
 import com.xiongchao.blog.bean.*;
+import com.xiongchao.blog.service.CategoryService;
 import com.xiongchao.blog.service.EssayService;
+import com.xiongchao.blog.service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -26,6 +28,12 @@ public class EssayController {
     @Autowired
     private EssayService essayService;
 
+    @Autowired
+    private CategoryService categoryService;
+
+    @Autowired
+    private TagService tagService;
+
     @PostMapping("save")
     @ApiOperation("保存文章")
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
@@ -35,6 +43,9 @@ public class EssayController {
             if (null == essay) {
                 return BaseResult.failure("该文章不存在或非本人文章");
             }
+            // 删除映射表中与之关联的所有标签、类型数据
+            tagService.deleteByEssayId(essayDTO.getId());
+            categoryService.deleteByEssayId(essayDTO.getId());
         }
         List<Tag> tags = essayDTO.getTags();
         if (tags == null || tags.isEmpty()) {

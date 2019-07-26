@@ -7,4 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface EssayCategoryMappingRepository extends JpaRepository<EssayCategoryMapping, Integer> {
 
+    Integer deleteByEssayId(Integer essayId);
+
 }

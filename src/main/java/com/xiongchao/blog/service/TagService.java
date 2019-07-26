@@ -1,9 +1,11 @@
 package com.xiongchao.blog.service;
 
 import com.xiongchao.blog.bean.Tag;
+import com.xiongchao.blog.dao.EssayTagMappingRepository;
 import com.xiongchao.blog.dao.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +16,9 @@ public class TagService {
 
     @Autowired
     private TagRepository tagRepository;
+
+    @Autowired
+    private EssayTagMappingRepository essayTagMappingRepository;
 
     public Tag save(Tag tag){
         return tagRepository.save(tag);
@@ -32,6 +37,11 @@ public class TagService {
 
     public List<Tag> findListByEssayId(Integer essayId) {
         return tagRepository.findListByEssayId(essayId);
+    }
+
+    @Transactional
+    public Integer deleteByEssayId(Integer essayId){
+        return essayTagMappingRepository.deleteByEssayId(essayId);
     }
 
 }
