@@ -6,6 +6,7 @@ import com.xiongchao.blog.DTO.EssayDTO;
 import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.dao.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -71,6 +72,7 @@ public class EssayService {
         return essayDTOS;
     }
 
+    @Cacheable(value = "findEssayById", key = "#id")
     public Optional<Essay> findById(Integer id){
         return essayRepository.findById(id);
     }

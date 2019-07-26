@@ -7,7 +7,6 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.validation.constraints.NotNull;
 
 @ApiModel(description = "文章")
 @Entity
