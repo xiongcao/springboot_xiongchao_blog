@@ -19,12 +19,10 @@ public class CommentService {
         return commentRepository.save(comment);
     }
 
-    public List<Comment> findAllByUserIdAndStatus(Integer userId, Integer status){
-        if(status == null){
-            return commentRepository.findAllByUserId(userId);
-        }
-        return commentRepository.findAllByUserIdAndStatus(userId, status);
+    public List<Comment> findAllByUserId(Integer userId) {
+        return commentRepository.findAllByUserId(userId);
     }
+
 
     public Optional<Comment> findById(Integer id){
         return commentRepository.findById(id);

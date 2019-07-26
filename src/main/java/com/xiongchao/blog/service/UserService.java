@@ -6,6 +6,7 @@ import com.xiongchao.blog.bean.User;
 import com.xiongchao.blog.dao.UserRepository;
 import com.xiongchao.blog.util.SqlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -39,6 +40,7 @@ public class UserService {
         return userRepository.findByPhoneNumber(phone);
     }
 
+    @Cacheable(value = "findUserById", key = "#id")
     public Optional<User> findById(Integer id) {
         return userRepository.findById(id);
     }
