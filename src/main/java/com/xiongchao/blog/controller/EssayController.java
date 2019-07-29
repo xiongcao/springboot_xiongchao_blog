@@ -65,7 +65,7 @@ public class EssayController {
     public BaseResult updateStatus(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                    @ApiParam("ID") @PathVariable("id") Integer id,
                                    @ApiParam("0:删除;1:正常;") @PathVariable("status") Integer status) {
-        Essay essay = essayService.findByIdAndUserId(id, adminId);
+        Essay essay = essayService.findById(id).orElseThrow(()->new RuntimeException("无此文章"));
         if (null == essay) {
             return BaseResult.failure("该文章不存在或非本人文章");
         }
