@@ -19,11 +19,8 @@ public class CollectService {
         return collectRepository.save(collect);
     }
 
-    public List<Collect> findAllByUserIdAndStatus(Integer userId, Integer status){
-        if(status == null){
-            return collectRepository.findAllByUserId(userId);
-        }
-        return collectRepository.findAllByUserIdAndStatus(userId, status);
+    public List<Collect> findAllByUserId(Integer userId){
+        return collectRepository.findAllByUserId(userId);
     }
 
     public Optional<Collect> findById(Integer id){

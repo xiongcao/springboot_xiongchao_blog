@@ -10,21 +10,21 @@ public class EssayDTO extends Essay {
 
     private List<Tag> tags;
 
-    private List<Category> categorys;
+        private List<Category> categorys;
 
-    public List<Tag> getTags() {
-        return tags;
-    }
+        public List<Tag> getTags() {
+            return tags;
+        }
 
-    public void setTags(List<Tag> tags) {
-        this.tags = tags;
-    }
+        public void setTags(List<Tag> tags) {
+            this.tags = tags;
+        }
 
-    public List<Category> getCategorys() {
-        return categorys;
-    }
+        public List<Category> getCategorys() {
+            return categorys;
+        }
 
-    public void setCategorys(List<Category> categorys) {
-        this.categorys = categorys;
+        public void setCategorys(List<Category> categorys) {
+            this.categorys = categorys;
     }
 }

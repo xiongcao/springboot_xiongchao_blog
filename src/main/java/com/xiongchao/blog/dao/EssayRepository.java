@@ -1,7 +1,6 @@
 package com.xiongchao.blog.dao;
 
 
-import com.xiongchao.blog.DTO.EssayDTO;
 import com.xiongchao.blog.bean.Essay;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

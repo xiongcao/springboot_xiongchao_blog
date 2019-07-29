@@ -20,7 +20,6 @@ public class Collect extends BaseEntity {
     private Integer status;
 
     @ApiModelProperty("用户ID")
-    @NotNull(message = "用户id不能为空")
     @Column(columnDefinition = "int(11)", nullable = false)
     private Integer userId;
 
