@@ -1,6 +1,8 @@
 package com.xiongchao.blog.controller;
 
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.service.FollowService;
 import com.xiongchao.blog.service.UserService;
@@ -40,54 +42,56 @@ public class FollowController {
         follow.setStatus(1);
         follow.setName(user.getName());
         if(follow.getId() == null){
-            Follow follow0 = followService.findByUserIdAndFollowUserId(userId, follow.getFollowUserId());
+            Follow follow0 = followService.findByUserIdAndFollowUserId(userId, follow.getFollowUserId(), 1);
             if (follow0 != null){
                 return BaseResult.failure("该用户已被关注");
             }
-            follow.setFollowUserId(user.getId());
-            follow.setNickname(user.getNickname());
-            follow.setAvatar(user.getAvatar());
-            // 添加被关注用户的粉丝
-            Follow follow1 = new Follow();
-            User user1 = userService.findById(userId).orElseThrow(()->new RuntimeException("被关注用户不存在"));
-            follow1.setAvatar(user1.getAvatar());
-            follow1.setName(user1.getName());
-            follow1.setNickname(user1.getNickname());
-            follow1.setFollowUserId(userId);
-            follow1.setStatus(2);
-            follow1.setUserId(follow.getFollowUserId());
-            followService.saveFollow(follow1);
+            follow0 = followService.findByUserIdAndFollowUserId(userId, follow.getFollowUserId(), 0);
+            if (follow0 != null) {  // 该用户已被关注过
+                follow.setId(follow0.getId());
+                follow = JSONObject.parseObject(JSON.toJSONString(follow0), Follow.class);
+                follow.setStatus(1);
+                // 查询被关注的用户的粉丝
+                Follow fans = followService.findByUserIdAndFollowUserId(follow.getFollowUserId(), userId, 0);
+                fans.setStatus(2);
+                followService.saveFollow(fans);
+            } else {
+                follow.setFollowUserId(user.getId());
+                follow.setNickname(user.getNickname());
+                follow.setAvatar(user.getAvatar());
+                // 添加被关注用户的粉丝
+                Follow fans = new Follow();
+                User user1 = userService.findById(userId).orElseThrow(()->new RuntimeException("被关注用户不存在"));
+                fans.setAvatar(user1.getAvatar());
+                fans.setName(user1.getName());
+                fans.setNickname(user1.getNickname());
+                fans.setFollowUserId(userId);
+                fans.setStatus(2);
+                fans.setUserId(follow.getFollowUserId());
+                followService.saveFollow(fans);
+            }
         }
         followService.saveFollow(follow);
         return BaseResult.success();
     }
 
-    @PostMapping("updateStatus")
-    @ApiOperation("修改关注状态")
-    public BaseResult updateStatus(@RequestParam("id") Integer id,
-                                   @RequestParam("status") @ApiParam(allowableValues = "0,1,2", value = "0:删除;1:关注;2：粉丝") Integer status,
-                             @ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer userId) {
+    @PostMapping("unFollow/{id}")
+    @ApiOperation("取消关注")
+    public BaseResult unFollow(@PathVariable("id") Integer id,
+                               @ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer userId){
         Follow follow = followService.findById(id).orElseThrow(()-> new RuntimeException("被关注用户不存在，无法修改数据"));
         // 修改关注状态
-        follow.setStatus(status);
+        follow.setStatus(0);
         followService.saveFollow(follow);
-        // 修改被关注用户的状态（修改粉丝状态）
-        Follow follow1 = followService.findByUserIdAndFollowUserId(follow.getFollowUserId(), userId);
-        int status1;
-        if(status == 0){
-            status1 = 0;
-        } else if(status == 1){
-            status1 = 2;
-        } else {
-            status1 =1;
-        }
-        follow1.setStatus(status1);
+        // 修改被关注用户的状态（删除粉丝）
+        Follow follow1 = followService.findByUserIdAndFollowUserId(follow.getFollowUserId(), userId, 2);
+        follow1.setStatus(0);
         followService.saveFollow(follow1);
         return BaseResult.success();
     }
 
     @PostMapping("updateNickName")
-    @ApiOperation("修改关注者昵称")
+    @ApiOperation("修改关注者备注")
     public BaseResult updateNickName(@RequestParam("id") Integer id,
                                      @RequestParam("nickname") String nickname,
                                    @ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer userId) {

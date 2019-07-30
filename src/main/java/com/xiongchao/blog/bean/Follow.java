@@ -38,6 +38,8 @@ public class Follow extends BaseEntity {
     @Column(columnDefinition = "int(11)", nullable = false)
     private Integer followUserId;
 
+    private Boolean mutualWatch;
+
     public String getAvatar() {
         return avatar;
     }
@@ -84,5 +86,13 @@ public class Follow extends BaseEntity {
 
     public void setFollowUserId(Integer followUserId) {
         this.followUserId = followUserId;
+    }
+
+    public Boolean getMutualWatch() {
+        return mutualWatch;
+    }
+
+    public void setMutualWatch(Boolean mutualWatch) {
+        this.mutualWatch = mutualWatch;
     }
 }

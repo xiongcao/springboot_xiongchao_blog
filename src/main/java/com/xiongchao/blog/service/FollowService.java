@@ -39,8 +39,8 @@ public class FollowService {
         return followRepository.findById(id);
     }
 
-    public Follow findByUserIdAndFollowUserId(Integer userId, Integer followUserId){
-        return followRepository.findByUserIdAndFollowUserId(userId, followUserId);
+    public Follow findByUserIdAndFollowUserId(Integer userId, Integer followUserId, Integer status){
+        return followRepository.findByUserIdAndFollowUserId(userId, followUserId, status);
     }
 
     public Page<Follow> findFollowAll(PageWithSearch pageWithSearch, Integer userId, Integer status){
@@ -66,7 +66,22 @@ public class FollowService {
         List<Follow> follows = new ArrayList<>();
         for (Object o : result) {
             Object[] obj = (Object[]) o;
-            follows.add(SqlUtil.toBean(obj, Follow.class));
+            Follow follow = SqlUtil.toBean(obj, Follow.class);
+            // 查询被关注或粉丝用户是否有我
+            Boolean mutualWatch = false;
+            if (follow.getStatus() == 1) {  // 关注, 他的关注里是否有我
+                Follow follow1 = findByUserIdAndFollowUserId(follow.getFollowUserId(), follow.getUserId(), follow.getStatus());
+                if (follow1 != null) {
+                    mutualWatch = true;
+                }
+            } else {    // 粉丝， 我的关注里是否有他
+                Follow follow1 = findByUserIdAndFollowUserId(follow.getUserId(), follow.getFollowUserId(), 1);
+                if (follow1 != null) {
+                    mutualWatch = true;
+                }
+            }
+            follow.setMutualWatch(mutualWatch);
+            follows.add(follow);
         }
         if (result.isEmpty()) {
             return new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
