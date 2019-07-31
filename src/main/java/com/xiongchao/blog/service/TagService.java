@@ -24,6 +24,10 @@ public class TagService {
         return tagRepository.save(tag);
     }
 
+    public List<Tag> saveAll(List<Tag> tags) {
+        return tagRepository.saveAll(tags);
+    }
+
     public List<Tag> findAllByUserIdAndStatus(Integer userId, Integer status){
         if(status == null){
             return tagRepository.findAllByUserIdAndStatus(userId);
@@ -42,6 +46,11 @@ public class TagService {
     @Transactional
     public Integer deleteByEssayId(Integer essayId){
         return essayTagMappingRepository.deleteByEssayId(essayId);
+    }
+
+    @Transactional
+    public void deleteById(Integer id){
+        tagRepository.deleteById(id);
     }
 
 }

@@ -27,8 +27,10 @@ public class Category extends BaseEntity {
     @Column(columnDefinition = "int(11) default 1")
     private Integer status;
 
+    @ApiModelProperty("封面")
+    private String cover;
+
     @ApiModelProperty("用户ID")
-//    @NotNull(message = "用户id不能为空")
     @Column(columnDefinition = "int(11)", nullable = false)
     private Integer userId;
 
@@ -62,5 +64,13 @@ public class Category extends BaseEntity {
 
     public void setRank(Integer rank) {
         this.rank = rank;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }
