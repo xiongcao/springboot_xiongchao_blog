@@ -23,6 +23,8 @@ public class BaseResult {
     public static final Integer USER_STORE_LOCKED    = 5;
     // 身份校验失败
     public static final Integer ADDRESS_AUTH_FAILURE = 6;
+    // 请求成功，返错误提示
+    public static final Integer SUCCESS_FAILURE      = 7;
 
     private Integer code;
     private String  msg;
