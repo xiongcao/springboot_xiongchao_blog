@@ -26,6 +26,9 @@ public class Essay extends BaseEntity {
     @Column(length = 20000)
     private String content;
 
+    @ApiModelProperty("封面")
+    private String cover;
+
     @ApiModelProperty("浏览次数")
     @Column(length = 11)
     private Integer browseNumber;
@@ -96,5 +99,13 @@ public class Essay extends BaseEntity {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public String getCover() {
+        return cover;
+    }
+
+    public void setCover(String cover) {
+        this.cover = cover;
     }
 }

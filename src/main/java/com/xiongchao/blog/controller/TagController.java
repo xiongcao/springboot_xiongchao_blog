@@ -30,16 +30,27 @@ public class TagController {
     @PostMapping("save")
     @ApiOperation("保存标签")
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
-                           @ApiIgnore @SessionAttribute(Constants.ROLE) String role,
                            @Valid @RequestBody Tag tag) {
-        if (role.equals("ROLE_SUPER")) {
-            return BaseResult.failure(1, "没有权限");
-        }
         tag.setUserId(adminId);
         if(tag.getId() != null){
             tagService.findById(tag.getId()).orElseThrow(()-> new RuntimeException("没有此标签"));
         }
         tagService.save(tag);
+        return BaseResult.success("保存成功");
+    }
+
+    @PostMapping("saveAll")
+    @ApiOperation("批量添加标签")
+    public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                           @Valid @RequestBody List<Tag> tags) {
+        for (Tag tag: tags) {
+            tag.setUserId(adminId);
+            Tag tag1 = tagService.findById(tag.getId()).orElseThrow(()-> new RuntimeException("没有此标签"));
+            if (tag1 != null) {
+                tagService.deleteById(tag.getId());
+            }
+        }
+        tagService.saveAll(tags);
         return BaseResult.success("保存成功");
     }
 
@@ -59,5 +70,11 @@ public class TagController {
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                    @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status) {
         return BaseResult.success(tagService.findAllByUserIdAndStatus(adminId, status));
+    }
+
+    @GetMapping("findSuperAll")
+    @ApiOperation("查询超管所有标签")
+    public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId) {
+        return BaseResult.success(tagService.findAllByUserIdAndStatus(1, 1));
     }
 }

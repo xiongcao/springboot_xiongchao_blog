@@ -12,6 +12,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     /**
      * 根据状态查询所有类型
+     *
      * @param userId
      * @param status
      * @return
@@ -24,6 +25,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     /**
      * 查询所有类型
+     *
      * @param userId
      * @return
      */
@@ -31,6 +33,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     /**
      * 查询所有未删除且根据rank降序排序的类型
+     *
      * @param userId
      * @return
      */
@@ -40,6 +43,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     /**
      * 根据文章ID查询所有标签
+     *
      * @param essayId
      * @return
      */
@@ -48,10 +52,12 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
 
     /**
      * 根据文章id和标签id查询 标签信息
+     *
      * @param essayId
      * @param tagId
      * @return
      */
     @Query(value = "SELECT t.* FROM tag t LEFT JOIN essay_tag_mapping et ON t.id = et.tag_id WHERE et.essay_id = ?1 AND t.id = ?2", nativeQuery = true)
     Tag findByEssayIdAndTagId(Integer essayId, Integer tagId);
+
 }

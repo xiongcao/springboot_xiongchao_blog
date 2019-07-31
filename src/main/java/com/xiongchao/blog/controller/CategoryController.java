@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Api(description = "类型管理")
 @RestController
@@ -29,13 +30,9 @@ public class CategoryController {
     @PostMapping("save")
     @ApiOperation("保存类型")
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
-                           @ApiIgnore @SessionAttribute(Constants.ROLE) String role,
                            @Valid @RequestBody Category category) {
-        if (role.equals("ROLE_SUPER")) {
-            return BaseResult.failure(1, "没有权限");
-        }
         category.setUserId(adminId);
-        if(category.getId() != null){
+        if (category.getId() != null) {
             Category category1 = categoryService.findByIdAndUserId(category.getId(), adminId);
             if (null == category1) {
                 return BaseResult.failure("该类型不存在或非本人类型");
@@ -45,16 +42,27 @@ public class CategoryController {
         return BaseResult.success();
     }
 
+    @PostMapping("saveAll")
+    @ApiOperation("批量添加类型")
+    public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                           @Valid @RequestBody List<Category> categories) {
+        for (Category category : categories) {
+            category.setUserId(adminId);
+            Category category1 = categoryService.findById(category.getId()).orElseThrow(()-> new RuntimeException("没有此标签"));
+            if (category1 != null) {
+                categoryService.deleteById(category.getId());
+            }
+        }
+        categoryService.saveAll(categories);
+        return BaseResult.success("保存成功");
+    }
+
     @PostMapping("updateStatus/{id}/{status}")
     @ApiOperation("修改状态")
     public BaseResult updateStatus(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
-                                   @ApiIgnore @SessionAttribute(Constants.ROLE) String role,
                                    @ApiParam("ID") @PathVariable("id") Integer id,
                                    @ApiParam("-1:删除;0:隐藏;1:正常;") @PathVariable("status") Integer status) {
-        if (role.equals("ROLE_SUPER")) {
-            return BaseResult.failure(1, "没有权限");
-        }
-        Category category = categoryService.findById(id).orElseThrow(()-> new RuntimeException("没有此类型"));
+        Category category = categoryService.findById(id).orElseThrow(() -> new RuntimeException("没有此类型"));
         category.setStatus(status);
         categoryService.save(category);
         return BaseResult.success();
@@ -63,7 +71,15 @@ public class CategoryController {
     @GetMapping("findAll")
     @ApiOperation("查询所有类型")
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
-                                   @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status) {
+                              @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status) {
+        System.out.print("路径:"+System.getProperty("user.dir"));
         return BaseResult.success(categoryService.findAllByUserIdAndStatus(adminId, status));
     }
+
+    @GetMapping("findSuperAll")
+    @ApiOperation("查询超管所有类型")
+    public BaseResult findSuperAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId) {
+        return BaseResult.success(categoryService.findAllByUserIdAndStatus(1, 1));
+    }
+
 }
