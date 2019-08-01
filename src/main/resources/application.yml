@@ -10,10 +10,10 @@ server:
   servlet:
     session:
       timeout: 24h
-#      timeout: 60
+      #      timeout: 60
       cookie:
         name: FLERKEN_SID
-  file-path: C:\project\springboot_xiongchao_blog\src\main\resources\static\images\
+  file-path: C:\project\springboot_xiongchao_blog\src\main\resources\static\
 spring:
   profiles:
     active: test
@@ -36,3 +36,5 @@ spring:
     allow-bean-definition-overriding: true
   mvc:
     static-path-pattern: /**
+  resources:
+    static-locations: file:${server.file-path}
