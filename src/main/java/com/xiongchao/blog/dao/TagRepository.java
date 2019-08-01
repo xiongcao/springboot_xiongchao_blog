@@ -60,4 +60,6 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
     @Query(value = "SELECT t.* FROM tag t LEFT JOIN essay_tag_mapping et ON t.id = et.tag_id WHERE et.essay_id = ?1 AND t.id = ?2", nativeQuery = true)
     Tag findByEssayIdAndTagId(Integer essayId, Integer tagId);
 
+    List<Tag> findByNameAndUserId(String name, Integer userId);
+
 }

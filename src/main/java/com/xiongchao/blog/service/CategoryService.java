@@ -39,6 +39,10 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
+    public List<Category> findByNameAndUserId(String name, Integer userId){
+        return categoryRepository.findByNameAndUserId(name, userId);
+    }
+
     public Category findByIdAndUserId(Integer id, Integer userId) {
         return categoryRepository.findByIdAndUserId(id, userId);
     }

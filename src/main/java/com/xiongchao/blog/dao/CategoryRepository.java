@@ -2,7 +2,6 @@ package com.xiongchao.blog.dao;
 
 
 import com.xiongchao.blog.bean.Category;
-import com.xiongchao.blog.bean.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -44,4 +43,6 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
      */
     @Query(value = "SELECT c.* FROM category c LEFT JOIN essay_category_mapping ec ON c.id = ec.category_id WHERE ec.essay_id = ? AND c.status <> 0", nativeQuery = true)
     List<Category> findListByEssayId(Integer essayId);
+
+    List<Category> findByNameAndUserId(String name, Integer userId);
 }

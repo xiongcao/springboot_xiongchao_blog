@@ -33,7 +33,15 @@ public class TagController {
                            @Valid @RequestBody Tag tag) {
         tag.setUserId(adminId);
         if(tag.getId() != null){
-            tagService.findById(tag.getId()).orElseThrow(()-> new RuntimeException("没有此标签"));
+            Tag tag1 = tagService.findByIdAndUserId(tag.getId(), adminId);
+            if (tag1 == null) {
+                return BaseResult.failure("该标签不存在或非本人标签");
+            }
+        } else {
+            List<Tag> tags = tagService.findByNameAndUserId(tag.getName(), tag.getUserId());
+            if (tags.size() != 0) {
+                return BaseResult.failure("已存在该标签");
+            }
         }
         tagService.save(tag);
         return BaseResult.success("保存成功");
@@ -45,9 +53,9 @@ public class TagController {
                            @Valid @RequestBody List<Tag> tags) {
         for (Tag tag: tags) {
             tag.setUserId(adminId);
-            Tag tag1 = tagService.findById(tag.getId()).orElseThrow(()-> new RuntimeException("没有此标签"));
-            if (tag1 != null) {
-                tagService.deleteById(tag.getId());
+            List<Tag> tags1 = tagService.findByNameAndUserId(tag.getName(), tag.getUserId());
+            if (tags1.size() != 0) {
+                tagService.deleteById(tags1.get(0).getId());
             }
         }
         tagService.saveAll(tags);
