@@ -32,10 +32,15 @@ public class CategoryController {
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                            @Valid @RequestBody Category category) {
         category.setUserId(adminId);
-        if (category.getId() != null) {
+        if(category.getId() != null){
             Category category1 = categoryService.findByIdAndUserId(category.getId(), adminId);
-            if (null == category1) {
-                return BaseResult.failure("该类型不存在或非本人类型");
+            if (category1 == null) {
+                return BaseResult.failure("该标签不存在或非本人类型");
+            }
+        } else {
+            List<Category> categories = categoryService.findByNameAndUserId(category.getName(), category.getUserId());
+            if (categories.size() != 0) {
+                return BaseResult.failure("已存在该类型");
             }
         }
         categoryService.save(category);
@@ -48,9 +53,9 @@ public class CategoryController {
                            @Valid @RequestBody List<Category> categories) {
         for (Category category : categories) {
             category.setUserId(adminId);
-            Category category1 = categoryService.findById(category.getId()).orElseThrow(()-> new RuntimeException("没有此标签"));
-            if (category1 != null) {
-                categoryService.deleteById(category.getId());
+            List<Category> categories1 = categoryService.findByNameAndUserId(category.getName(), category.getUserId());
+            if (categories1.size() != 0) {
+                categoryService.deleteById(categories1.get(0).getId());
             }
         }
         categoryService.saveAll(categories);
@@ -72,7 +77,6 @@ public class CategoryController {
     @ApiOperation("查询所有类型")
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                               @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status) {
-        System.out.print("路径:"+System.getProperty("user.dir"));
         return BaseResult.success(categoryService.findAllByUserIdAndStatus(adminId, status));
     }
 

@@ -39,6 +39,14 @@ public class TagService {
         return tagRepository.findById(id);
     }
 
+    public List<Tag> findByNameAndUserId(String name, Integer userId){
+        return tagRepository.findByNameAndUserId(name, userId);
+    }
+
+    public Tag findByIdAndUserId(Integer id, Integer userId){
+        return tagRepository.findByIdAndUserId(id, userId);
+    }
+
     public List<Tag> findListByEssayId(Integer essayId) {
         return tagRepository.findListByEssayId(essayId);
     }
