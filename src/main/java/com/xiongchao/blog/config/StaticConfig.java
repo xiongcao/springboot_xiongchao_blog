@@ -1,3 +1,4 @@
+/*
 package com.xiongchao.blog.config;
 
 import org.springframework.context.annotation.Configuration;
@@ -15,3 +16,4 @@ public class StaticConfig extends WebMvcConfigurationSupport {
         super.addResourceHandlers(registry);
     }
 }
+*/
