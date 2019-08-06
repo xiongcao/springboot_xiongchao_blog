@@ -33,6 +33,10 @@ public class Essay extends BaseEntity {
     @Column(length = 11)
     private Integer browseNumber;
 
+    @ApiModelProperty("点赞数")
+    @Column(columnDefinition = "int(11) default 0")
+    private Integer star;
+
     @ApiModelProperty("序号")
     @Column(columnDefinition = "int(11) default 0")
     private Integer rank;
@@ -107,5 +111,13 @@ public class Essay extends BaseEntity {
 
     public void setCover(String cover) {
         this.cover = cover;
+    }
+
+    public Integer getStar() {
+        return star;
+    }
+
+    public void setStar(Integer star) {
+        this.star = star;
     }
 }

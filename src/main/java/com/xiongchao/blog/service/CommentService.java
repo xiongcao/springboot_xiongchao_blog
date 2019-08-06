@@ -23,9 +23,16 @@ public class CommentService {
         return commentRepository.findAllByUserId(userId);
     }
 
-
     public Optional<Comment> findById(Integer id){
         return commentRepository.findById(id);
+    }
+
+    public Integer findNumberByEssayId(Integer essayId) {
+        return commentRepository.findNumberByEssayId(essayId);
+    }
+
+    public List<Comment> findByEssayId(Integer essayId){
+        return commentRepository.findByEssayId(essayId);
     }
 
 }

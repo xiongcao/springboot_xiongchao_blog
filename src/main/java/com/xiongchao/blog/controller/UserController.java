@@ -14,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.view.RedirectView;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +22,6 @@ import javax.validation.Valid;
 import java.util.Date;
 
 @Api(description = "用户管理")
-//@RestController
 @Controller
 @RequestMapping("user")
 public class UserController {
@@ -149,11 +145,19 @@ public class UserController {
         return BaseResult.success(user);
     }
 
-    @GetMapping("findById")
+    @GetMapping("admin/findById")
     @ResponseBody
-    @ApiOperation("根据用户Id查询用户信息")
+    @ApiOperation("后台根据用户Id查询用户信息")
     public BaseResult findById(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                @RequestParam("id") Integer id, HttpServletRequest request) {
+        User user = userService.findById(id).orElseThrow(() -> new RuntimeException("用户不存在"));
+        return BaseResult.success(user);
+    }
+
+    @GetMapping("findById")
+    @ResponseBody
+    @ApiOperation("前台根据用户Id查询用户信息")
+    public BaseResult findById(@RequestParam("id") Integer id, HttpServletRequest request) {
         User user = userService.findById(id).orElseThrow(() -> new RuntimeException("用户不存在"));
         return BaseResult.success(user);
     }
@@ -170,7 +174,7 @@ public class UserController {
 
     @PostMapping("register")
     @ApiOperation("注册")
-    public String register(@Valid @RequestBody User user, Model model) {
+    public String register(@Valid @RequestBody User user) {
         String password = user.getPassword();
         user.passwordEncoder();
         userService.save(user);
@@ -198,5 +202,4 @@ public class UserController {
         }
         return BaseResult.success("该手机号已注册");
     }
-
 }

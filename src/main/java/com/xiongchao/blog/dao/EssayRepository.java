@@ -1,7 +1,9 @@
 package com.xiongchao.blog.dao;
 
 
+import com.xiongchao.blog.bean.BasePage;
 import com.xiongchao.blog.bean.Essay;
+import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -34,6 +36,6 @@ public interface EssayRepository extends JpaRepository<Essay, Integer> {
     @Query(value = "select * from essay c WHERE c.user_id = ? and c.status <> 0 ORDER BY c.rank DESC", nativeQuery = true)
     List<Essay> findAllByUserIdNotDelete(Integer userId);
 
-
     Essay findByIdAndUserId(Integer id, Integer userId);
+
 }
