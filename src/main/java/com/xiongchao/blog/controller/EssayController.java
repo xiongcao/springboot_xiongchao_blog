@@ -74,17 +74,53 @@ public class EssayController {
         return BaseResult.success();
     }
 
-    @GetMapping("findAll")
-    @ApiOperation("查询所有文章")
-    public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
-                                   @ApiParam("1公开 2：私密 3：草稿 0：删除;") @RequestParam(value = "status", required = false) Integer status) {
-        return BaseResult.success(essayService.findAllByUserIdAndStatus(adminId, status));
+    @GetMapping("admin/findAll")
+    @ApiOperation("后台查询所有文章")
+    public BaseResult findAllByAdminId(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                                       @RequestParam(value = "title", required = false) @ApiParam("文章标题,不传表示查所有") String title,
+                                       @RequestParam(value = "categoryId", required = false) @ApiParam("类型,不传表示查所有") Integer categoryId,
+                                       @RequestParam(value = "tagId", required = false) @ApiParam("标签,不传表示查所有") Integer tagId,
+                                       @ApiParam("1公开 2：私密 3：草稿 0：删除;") @RequestParam(value = "status", required = false) Integer status,
+                                        BasePage basePage) {
+        return BaseResult.success(essayService.findAllPage(title, categoryId, tagId, adminId, status, basePage));
     }
 
-    @GetMapping("detail/{id}")
-    @ApiOperation("根据文章id查询文章信息")
+    /**
+     * status: 1公开 2：私密 3：草稿 0：删除;
+     * @return
+     */
+    @GetMapping("findAll")
+    @ApiOperation("前台查询博主所有文章")
+    public BaseResult findAll(@RequestParam(value = "title", required = false) @ApiParam("文章标题,不传表示查所有") String title,
+                              @RequestParam(value = "categoryId", required = false) @ApiParam("类型,不传表示查所有") Integer categoryId,
+                              @RequestParam(value = "tagId", required = false) @ApiParam("标签,不传表示查所有") Integer tagId,
+                              BasePage basePage) {
+        return BaseResult.success(essayService.findAllPage(title, categoryId, tagId, 2, 1, basePage));
+    }
+
+    /**
+     * 需要做分页，按点赞数，时间排序
+     * @return
+     */
+    @GetMapping("findAllAuthorList")
+    @ApiOperation("前台查询所有博主文章")
+    public BaseResult findAllPage(@RequestParam(value = "categoryId", required = false) @ApiParam("类型,不传表示查所有") Integer categoryId,
+                                    @RequestParam(value = "tagId", required = false) @ApiParam("标签,不传表示查所有") Integer tagId,
+                                    @RequestParam(value = "title", required = false) @ApiParam("文章标题,不传表示查所有") String title,
+                                    BasePage basePage) {
+        return BaseResult.success(essayService.findAllPage(title, categoryId, tagId, null, null, basePage));
+    }
+
+    @GetMapping("admin/detail/{id}")
+    @ApiOperation("后台根据文章id查询文章信息")
     public BaseResult detail(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                              @ApiParam("ID") @PathVariable("id") Integer id) {
         return BaseResult.success(essayService.findByIdAndUserId(id, adminId));
+    }
+
+    @GetMapping("detail/{id}")
+    @ApiOperation("前台根据文章id查询文章信息")
+    public BaseResult detail(@ApiParam("ID") @PathVariable("id") Integer id) {
+        return BaseResult.success(essayService.findEssayJoinCommentById(id, 1));
     }
 }

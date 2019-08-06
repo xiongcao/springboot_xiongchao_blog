@@ -19,6 +19,14 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     @Query(value = "select * from category c WHERE c.user_id = ?1 and c.status = ?2 ORDER BY c.rank DESC", nativeQuery = true)
     List<Category> findAllByUserIdAndStatus(Integer userId, Integer status);
 
+
+    /**
+     * 查询数据库中所有公开的文章
+     * @return
+     */
+    @Query(value = "select * from category c WHERE c.status = 1 ORDER BY c.rank DESC", nativeQuery = true)
+    List<Category> findAll();
+
     Category findByIdAndUserId(Integer id, Integer userId);
 
     /**
