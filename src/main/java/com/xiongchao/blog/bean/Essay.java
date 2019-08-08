@@ -22,6 +22,10 @@ public class Essay extends BaseEntity {
     @Column(columnDefinition = "int(11) default 0")
     private Integer type;
 
+    @ApiModelProperty("简要描述")
+    @Column(length = 1000)
+    private String describe;
+
     @ApiModelProperty("正文")
     @Column(length = 20000)
     private String content;
@@ -119,5 +123,13 @@ public class Essay extends BaseEntity {
 
     public void setStar(Integer star) {
         this.star = star;
+    }
+
+    public String getDescribe() {
+        return describe;
+    }
+
+    public void setDescribe(String describe) {
+        this.describe = describe;
     }
 }

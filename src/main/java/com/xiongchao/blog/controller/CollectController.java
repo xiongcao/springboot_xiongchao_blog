@@ -77,7 +77,7 @@ public class CollectController {
             User user = userService.findById(collect.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
             collectDTO.setName(user.getName());
             collectDTO.setNickname(user.getNickname());
-            collectDTO.setRemark(user.getRemark());
+            collectDTO.setRemark(user.getIntroduce());
             collectDTOS.add(collectDTO);
         }
         return BaseResult.success(collectDTOS);

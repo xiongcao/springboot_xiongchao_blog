@@ -11,11 +11,13 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import java.lang.reflect.Array;
 import java.util.*;
 
 
@@ -51,8 +53,6 @@ public class EssayService {
         List<Tag> tags = essayDTO.getTags();
         List<Category> categorys = essayDTO.getCategorys();
         Essay essay = JSON.parseObject(JSON.toJSONString(essayDTO), Essay.class);
-        essay = essayRepository.save(essay);
-
         // 保存标签
         List<EssayTagMapping> essayTagMappings = new ArrayList<>();
         for (Tag tag : tags) {
@@ -66,6 +66,7 @@ public class EssayService {
             essayCategoryMappings.add(new EssayCategoryMapping(essay.getId(), category.getId()));
         }
         essayCategoryMappingRepository.saveAll(essayCategoryMappings);
+        essay = essayRepository.save(essay);
     }
 
     public List<EssayDTO> findAllByUserIdAndStatus(Integer userId, Integer status) {
@@ -90,6 +91,14 @@ public class EssayService {
     public Page<EssayDTO> findAllPage(String title, Integer categoryId, Integer tagId, Integer adminId, Integer status, BasePage basePage) {
         Integer page = null == basePage.getPage() ? 0 : basePage.getPage();
         Integer size = null == basePage.getSize() ? 20 : basePage.getSize();
+        String direction = null == basePage.getDirection() ? "DESC" : basePage.getDirection();
+        String[] properties;
+        if (null ==  basePage.getProperties()) {
+            properties = new String[1];
+            properties[0] = "created_date";
+        } else {
+            properties = basePage.getProperties();
+        }
         StringBuilder sb = new StringBuilder();
         sb.append("SELECT " + SqlUtil.sqlGenerate("e", Essay.class) + ", ec.category_id FROM essay e");
         sb.append(" LEFT JOIN essay_category_mapping ec ON e.id = ec.essay_id");
@@ -97,7 +106,7 @@ public class EssayService {
         if (status != null) {
             sb.append(" WHERE e.status = " + status);
         } else {
-            sb.append(" WHERE e.status = 1");
+            sb.append(" WHERE 1 = 1");
         }
         if (adminId != null) {
             sb.append(" AND e.user_id = " + adminId);
@@ -111,7 +120,15 @@ public class EssayService {
         if (!StringUtils.isEmpty(title)) {
             sb.append(" AND e.title LIKE '%" + title + "%'");
         }
-        sb.append(" GROUP BY e.id ORDER BY e.rank DESC ");
+        sb.append(" GROUP BY e.id");
+        sb.append(" ORDER BY");
+        for (int i = 0;i<properties.length;i++) {
+            if (i == properties.length - 1) {
+                sb.append(" e."+ properties[i] +" " + direction);
+            } else {
+                sb.append(" e."+ properties[i] +" " + direction + ",");
+            }
+        }
         Query query = em.createNativeQuery(sb.toString());
         query.setFirstResult(page * size);
         query.setMaxResults(size);
@@ -166,7 +183,7 @@ public class EssayService {
 
     public Long findListCount(String title, Integer categoryId, Integer tagId, Integer userId, Integer status) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT " + SqlUtil.sqlGenerate("e", Essay.class) + ", ec.category_id FROM essay e");
+        sb.append("SELECT count(*) FROM essay e");
         sb.append(" LEFT JOIN essay_category_mapping ec ON e.id = ec.essay_id");
         sb.append(" LEFT JOIN essay_tag_mapping et ON e.id = et.essay_id");
         if (status != null) {

@@ -51,6 +51,10 @@ public class User extends BaseEntity {
     @Column(length = 225)
     private String nickname;
 
+    @ApiModelProperty("座右铭")
+    @Column(length = 225)
+    private String motto;
+
     @ApiModelProperty("密码")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(length = 225, nullable = false)
@@ -74,9 +78,9 @@ public class User extends BaseEntity {
     @Column(columnDefinition = "int(11) default 0")
     private Integer passwordAttemptCount;
 
-    @ApiModelProperty("备注")
-    @Column(length = 225)
-    private String remark;
+    @ApiModelProperty("个人介绍")
+    @Column(length = 1000)
+    private String introduce;
 
     @ApiModelProperty("角色 'ROLE_SUPER'：超管 'ROLE_USER'：普通用户")
     @Column(length = 225, nullable = false)
@@ -177,12 +181,20 @@ public class User extends BaseEntity {
         this.passwordAttemptCount = passwordAttemptCount;
     }
 
-    public String getRemark() {
-        return remark;
+    public String getMotto() {
+        return motto;
     }
 
-    public void setRemark(String remark) {
-        this.remark = remark;
+    public void setMotto(String motto) {
+        this.motto = motto;
+    }
+
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
     }
 
     public String getRole() {
