@@ -108,7 +108,7 @@ public class EssayController {
                                     @RequestParam(value = "tagId", required = false) @ApiParam("标签,不传表示查所有") Integer tagId,
                                     @RequestParam(value = "title", required = false) @ApiParam("文章标题,不传表示查所有") String title,
                                     BasePage basePage) {
-        return BaseResult.success(essayService.findAllPage(title, categoryId, tagId, null, null, basePage));
+        return BaseResult.success(essayService.findAllPage(title, categoryId, tagId, null, 1, basePage));
     }
 
     @GetMapping("admin/detail/{id}")

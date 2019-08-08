@@ -74,7 +74,7 @@ public class CommentController {
             Essay essay = essayService.findById(comment.getEssayId()).orElseThrow(() ->  new RuntimeException("查无此博客"));
             commentDTO.setName(user.getName());
             commentDTO.setNickname(user.getNickname());
-            commentDTO.setRemark(user.getRemark());
+            commentDTO.setRemark(user.getIntroduce());
             commentDTO.setTitle(essay.getTitle());
             commentDTOS.add(commentDTO);
         }
