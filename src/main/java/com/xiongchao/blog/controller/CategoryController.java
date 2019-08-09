@@ -86,4 +86,20 @@ public class CategoryController {
         return BaseResult.success(categoryService.findAllByUserIdAndStatus(1, 1));
     }
 
+    @GetMapping("findCategoryNumbers")
+    @ApiOperation("获取所有文章中分类使用次数最多的前几个类型")
+    public BaseResult findCategoryNumberList(@ApiParam("用户ID") @RequestParam(value = "userId", required = false) Integer userId){
+        List<Category> categories = categoryService.findCategoryNumber(userId);
+        if (categories.size() > 10) {
+            categories.subList(0, 10);
+        }
+        return BaseResult.success(categories);
+    }
+
+    @GetMapping("findCategoryEssayNumber")
+    @ApiOperation("查询用户所有文章中的使用到的类型的文章数量")
+    public BaseResult findTagEssayNumber(@ApiParam("用户ID") @RequestParam("userId") Integer userId){
+        return BaseResult.success(categoryService.findCatetoryEssayNumByUserId(userId));
+    }
+
 }

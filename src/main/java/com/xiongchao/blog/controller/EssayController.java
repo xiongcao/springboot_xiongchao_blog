@@ -123,4 +123,5 @@ public class EssayController {
     public BaseResult detail(@ApiParam("ID") @PathVariable("id") Integer id) {
         return BaseResult.success(essayService.findEssayJoinCommentById(id, 1));
     }
+
 }

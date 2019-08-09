@@ -85,4 +85,20 @@ public class TagController {
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId) {
         return BaseResult.success(tagService.findAllByUserIdAndStatus(1, 1));
     }
+
+    @GetMapping("findTagNumbers")
+    @ApiOperation("获取所有文章中标签使用次数最多的前几个标签")
+    public BaseResult findTagNumberList(@ApiParam("用户ID") @RequestParam(value = "userId", required = false) Integer userId){
+        List<Tag> tags = tagService.findTagNumber(userId);
+        if (tags.size() > 10) {
+            tags.subList(0, 10);
+        }
+        return BaseResult.success(tags);
+    }
+
+    @GetMapping("findTagEssayNumber")
+    @ApiOperation("查询用户所有文章中的使用到的标签的文章数量")
+    public BaseResult findTagEssayNumber(@ApiParam("用户ID") @RequestParam("userId") Integer userId){
+        return BaseResult.success(tagService.findTagEssayNumByUserId(userId));
+    }
 }
