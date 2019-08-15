@@ -91,7 +91,7 @@ public class EssayService {
         Integer size = null == basePage.getSize() ? 20 : basePage.getSize();
         String direction = null == basePage.getDirection() ? "DESC" : basePage.getDirection();
         String[] properties;
-        if (null ==  basePage.getProperties()) {
+        if (null == basePage.getProperties()) {
             properties = new String[1];
             properties[0] = "created_date";
         } else {
@@ -120,11 +120,11 @@ public class EssayService {
         }
         sb.append(" GROUP BY e.id");
         sb.append(" ORDER BY");
-        for (int i = 0;i<properties.length;i++) {
+        for (int i = 0; i < properties.length; i++) {
             if (i == properties.length - 1) {
-                sb.append(" e."+ properties[i] +" " + direction);
+                sb.append(" e." + properties[i] + " " + direction);
             } else {
-                sb.append(" e."+ properties[i] +" " + direction + ",");
+                sb.append(" e." + properties[i] + " " + direction + ",");
             }
         }
         Query query = em.createNativeQuery(sb.toString());
@@ -163,7 +163,15 @@ public class EssayService {
     @Cacheable(value = "findEssayJoinCommentById", key = "#id")
     public EssayDTO findEssayJoinCommentById(Integer id, Integer status) {
         Essay essay = essayRepository.findByIdAndUserId(id, status);
+        // 添加浏览记录
+        Essay essay0 = JSONObject.parseObject(JSON.toJSONString(essay), Essay.class);
+        essay0.setBrowseNumber(essay0.getBrowseNumber() + 1);
+        essayRepository.save(essay0);
         EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay), EssayDTO.class);
+        // 查询类型
+        essayDTO.setCategorys(categoryRepository.findListByEssayId(essay.getId()));
+        // 查询标签
+        essayDTO.setTags(tagRepository.findListByEssayId(essay.getId()));
         List<Comment> comments = commentService.findByEssayId(essay.getId());
         essayDTO.setComments(comments);
         return essayDTO;
