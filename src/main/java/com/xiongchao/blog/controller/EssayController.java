@@ -121,7 +121,7 @@ public class EssayController {
     @GetMapping("detail/{id}")
     @ApiOperation("前台根据文章id查询文章信息")
     public BaseResult detail(@ApiParam("ID") @PathVariable("id") Integer id) {
-        return BaseResult.success(essayService.findEssayJoinCommentById(id, 1));
+        return BaseResult.success(essayService.findEssayJoinCommentById(id, 2));
     }
 
 }
