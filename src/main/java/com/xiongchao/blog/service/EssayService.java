@@ -98,7 +98,7 @@ public class EssayService {
             properties = basePage.getProperties();
         }
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT " + SqlUtil.sqlGenerate("e", Essay.class) + ", ec.category_id FROM essay e");
+        sb.append("SELECT " + SqlUtil.sqlGenerate("e", Essay.class) + " FROM essay e");
         sb.append(" LEFT JOIN essay_category_mapping ec ON e.id = ec.essay_id");
         sb.append(" LEFT JOIN essay_tag_mapping et ON e.id = et.essay_id");
         if (status != null) {
