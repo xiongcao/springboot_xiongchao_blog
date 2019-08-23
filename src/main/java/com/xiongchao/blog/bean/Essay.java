@@ -24,7 +24,7 @@ public class Essay extends BaseEntity {
 
     @ApiModelProperty("简要描述")
     @Column(unique = true, length = 225, nullable = false)
-    private String describe;
+    private String des;
 
     @ApiModelProperty("正文")
     @Column(length = 20000)
@@ -125,11 +125,11 @@ public class Essay extends BaseEntity {
         this.star = star;
     }
 
-    public String getDescribe() {
-        return describe;
+    public String getDes() {
+        return des;
     }
 
-    public void setDescribe(String describe) {
-        this.describe = describe;
+    public void setDes(String des) {
+        this.des = des;
     }
 }
