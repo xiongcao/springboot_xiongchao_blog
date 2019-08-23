@@ -1,5 +1,6 @@
 package com.xiongchao.blog.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.xiongchao.blog.DTO.EssayDTO;
 import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.service.CategoryService;
@@ -56,6 +57,7 @@ public class EssayController {
             return BaseResult.failure("缺少类型参数");
         }
         essayDTO.setUserId(adminId);
+        System.out.println("数据："+ JSON.toJSONString(essayDTO));
         essayService.save(essayDTO);
         return BaseResult.success();
     }
