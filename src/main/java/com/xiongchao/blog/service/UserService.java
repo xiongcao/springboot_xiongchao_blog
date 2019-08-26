@@ -1,6 +1,5 @@
 package com.xiongchao.blog.service;
 
-import com.xiongchao.blog.bean.BasePage;
 import com.xiongchao.blog.bean.PageWithSearch;
 import com.xiongchao.blog.bean.User;
 import com.xiongchao.blog.dao.UserRepository;
@@ -26,6 +25,9 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private FollowService followService;
+
+    @Autowired
     private EntityManager em;
 
     public User findByUsername (String name) {
@@ -44,6 +46,17 @@ public class UserService {
     public Optional<User> findById(Integer id) {
         return userRepository.findById(id);
     }
+
+    /**
+     * 查询用户的关注、粉丝数量
+     * @param userId 用户ID
+     * @param status 1：关注 2：粉丝
+     * @return
+     */
+    public Integer findFollowNumberByStatus(Integer userId, Integer status) {
+        return userRepository.findFollowNumberByStatus(userId, status);
+    }
+
 
     public Page<User> findUserAll(PageWithSearch pageWithSearch, Integer userId){
         String field = pageWithSearch.getField();

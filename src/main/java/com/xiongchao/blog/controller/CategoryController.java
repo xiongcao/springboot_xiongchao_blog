@@ -98,8 +98,8 @@ public class CategoryController {
 
     @GetMapping("findCategoryEssayNumber")
     @ApiOperation("查询用户所有文章中的使用到的类型的文章数量")
-    public BaseResult findTagEssayNumber(@ApiParam("用户ID") @RequestParam("userId") Integer userId){
-        return BaseResult.success(categoryService.findCatetoryEssayNumByUserId(userId));
+    public BaseResult findTagEssayNumber(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId){
+        return BaseResult.success(categoryService.findCatetoryEssayNumByUserId(adminId));
     }
 
 }

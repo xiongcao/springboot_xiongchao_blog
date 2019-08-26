@@ -98,16 +98,18 @@ public class TagService {
      */
     public List findTagEssayNumByUserId(Integer userId){
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT et.tag_id id, COUNT(et.tag_id) essayNum FROM essay e LEFT JOIN essay_tag_mapping et ON e.id = et.essay_id WHERE e.status = 1 AND e.user_id = "+userId+" GROUP BY et.tag_id");
+        sb.append("SELECT et.tag_id id, t.name, COUNT(et.tag_id) essayNum FROM essay e LEFT JOIN essay_tag_mapping et ON e.id = et.essay_id LEFT JOIN tag t ON t.id = et.tag_id WHERE e.status = 1 AND e.user_id = "+userId+" GROUP BY et.tag_id");
         Query query = em.createNativeQuery(sb.toString());
         List<Object> objects = query.getResultList();
         List list = new ArrayList();
         for (int i = 0; i < objects.size(); i++) {
             Object[] obj = (Object[]) objects.get(i);
             Integer id = Integer.parseInt(obj[0].toString());
-            Integer num = Integer.parseInt(obj[1].toString());
+            String name = obj[1].toString();
+            Integer num = Integer.parseInt(obj[2].toString());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", id);
+            jsonObject.put("name", name);
             jsonObject.put("num", num);
             list.add(jsonObject);
         }

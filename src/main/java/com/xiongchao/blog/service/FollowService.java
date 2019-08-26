@@ -47,7 +47,7 @@ public class FollowService {
         String field = pageWithSearch.getField();
         String value = pageWithSearch.getValue();
         Integer page = pageWithSearch.defaultPage(0);
-        Integer size = pageWithSearch.defaultSize(20);
+        Integer size = pageWithSearch.defaultSize(1000);
 
         StringBuilder sb = new StringBuilder();
         sb.append(" select " + SqlUtil.sqlGenerate("u", Follow.class) + " from follow u where u.status = " + status + " ");
