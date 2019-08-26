@@ -98,7 +98,7 @@ public class TagController {
 
     @GetMapping("findTagEssayNumber")
     @ApiOperation("查询用户所有文章中的使用到的标签的文章数量")
-    public BaseResult findTagEssayNumber(@ApiParam("用户ID") @RequestParam("userId") Integer userId){
-        return BaseResult.success(tagService.findTagEssayNumByUserId(userId));
+    public BaseResult findTagEssayNumber(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId){
+        return BaseResult.success(tagService.findTagEssayNumByUserId(adminId));
     }
 }

@@ -1,5 +1,7 @@
 package com.xiongchao.blog.controller;
 
+import com.alibaba.fastjson.JSON;
+import com.xiongchao.blog.DTO.UserDTO;
 import com.xiongchao.blog.bean.BaseResult;
 import com.xiongchao.blog.bean.Constants;
 import com.xiongchao.blog.bean.User;
@@ -160,6 +162,19 @@ public class UserController {
     public BaseResult findById(@RequestParam("id") Integer id, HttpServletRequest request) {
         User user = userService.findById(id).orElseThrow(() -> new RuntimeException("用户不存在"));
         return BaseResult.success(user);
+    }
+
+    @GetMapping("findAdmin")
+    @ResponseBody
+    @ApiOperation("前台查询已经登录的用户信息")
+    public BaseResult findAdmin(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId) {
+        User user = userService.findById(adminId).orElseThrow(() -> new RuntimeException("用户不存在"));
+        UserDTO userDTO = JSON.parseObject(JSON.toJSONString(user), UserDTO.class);
+        Integer follow_number = userService.findFollowNumberByStatus(adminId, 1);
+        Integer fans_number = userService.findFollowNumberByStatus(adminId, 2);
+        userDTO.setFollow_number(follow_number);
+        userDTO.setFans_number(fans_number);
+        return BaseResult.success(userDTO);
     }
 
     @PostMapping("save")

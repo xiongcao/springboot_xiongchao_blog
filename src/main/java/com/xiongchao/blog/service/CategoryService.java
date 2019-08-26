@@ -96,16 +96,18 @@ public class CategoryService {
      */
     public List findCatetoryEssayNumByUserId(Integer userId){
         StringBuilder sb = new StringBuilder();
-        sb.append("SELECT ec.category_id id, COUNT(ec.category_id) essayNum FROM essay e LEFT JOIN essay_category_mapping ec ON e.id = ec.essay_id WHERE e.status = 1 AND e.user_id = "+userId+" GROUP BY ec.category_id");
+        sb.append("SELECT ec.category_id id, c.name, COUNT(ec.category_id) essayNum FROM essay e LEFT JOIN essay_category_mapping ec ON e.id = ec.essay_id LEFT JOIN category c ON c.id = ec.category_id WHERE e.status = 1 AND e.user_id = "+userId+" GROUP BY ec.category_id");
         Query query = em.createNativeQuery(sb.toString());
         List<Object> objects = query.getResultList();
         List list = new ArrayList();
         for (int i = 0; i < objects.size(); i++) {
             Object[] obj = (Object[]) objects.get(i);
             Integer id = Integer.parseInt(obj[0].toString());
-            Integer num = Integer.parseInt(obj[1].toString());
+            String name = obj[1].toString();
+            Integer num = Integer.parseInt(obj[2].toString());
             JSONObject jsonObject = new JSONObject();
             jsonObject.put("id", id);
+            jsonObject.put("name", name);
             jsonObject.put("num", num);
             list.add(jsonObject);
         }
