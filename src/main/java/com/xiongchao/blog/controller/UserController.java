@@ -182,7 +182,9 @@ public class UserController {
     @ApiOperation("保存用户信息")
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                            @Valid @RequestBody User user) {
-        user.passwordEncoder();
+        User user1 = userService.findById(adminId).orElseThrow(() -> new RuntimeException("用户不存在"));
+        user.setPassword(user1.getPassword());
+//        user.passwordEncoder();
         userService.save(user);
         return BaseResult.success("添加成功");
     }

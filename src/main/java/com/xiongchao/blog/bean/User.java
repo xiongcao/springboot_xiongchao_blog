@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
@@ -58,7 +59,7 @@ public class User extends BaseEntity {
     @ApiModelProperty("密码")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @Column(length = 225, nullable = false)
-    @NotNull(message = "密码不能为空")
+//    @NotNull(message = "密码不能为空")
     private String password;
 
     @ApiModelProperty("手机号")
@@ -124,6 +125,26 @@ public class User extends BaseEntity {
     @ApiModelProperty("状态 0：删除, 1:正常, 2:密码尝试锁定, 3:上级领导锁定")
     @Column(columnDefinition = "int(11) default 1")
     private Integer status;
+
+    @ApiModelProperty("省份")
+    @Column(length = 225)
+    private String province;
+
+    @ApiModelProperty("城市")
+    @Column(length = 225)
+    private String city;
+
+    @ApiModelProperty("区域")
+    @Column(length = 225)
+    private String area;
+
+    @ApiModelProperty("行业")
+    @Column(length = 225)
+    private String industry;
+
+    @ApiModelProperty("职位")
+    @Column(length = 225)
+    private String position;
 
     public String getName() {
         return name;
@@ -291,5 +312,45 @@ public class User extends BaseEntity {
 
     public boolean passwordMatches(String password) {
         return PasswordUtil.matches(password, this.password);
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getArea() {
+        return area;
+    }
+
+    public void setArea(String area) {
+        this.area = area;
+    }
+
+    public String getIndustry() {
+        return industry;
+    }
+
+    public void setIndustry(String industry) {
+        this.industry = industry;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
     }
 }
