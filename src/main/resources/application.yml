@@ -13,7 +13,8 @@ server:
       #      timeout: 60
       cookie:
         name: FLERKEN_SID
-  file-path: C:\project\springboot_xiongchao_blog\src\main\resources\static\
+   # file-path: C:\project\springboot_xiongchao_blog\src\main\resources\static\ # win
+  file-path: /Users/xiongchao/Desktop/myproject/springboot_xiongchao_blog/src/main/resources/static/ # mac
 spring:
   profiles:
     active: test

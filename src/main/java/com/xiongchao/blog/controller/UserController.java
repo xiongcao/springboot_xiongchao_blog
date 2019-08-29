@@ -219,4 +219,20 @@ public class UserController {
         }
         return BaseResult.success("该手机号已注册");
     }
+
+    @PostMapping("updatePassword")
+    @ResponseBody
+    @ApiOperation("修改密码")
+    public BaseResult updatePassword(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                                     @RequestParam("oldPwd") String oldPwd,
+                                     @RequestParam("newPwd") String newPwd) {
+        User user = userService.findById(adminId).orElseThrow(() -> new RuntimeException("用户不存在"));
+        if (!user.passwordMatches(oldPwd)) {
+            return BaseResult.failure("原始密码不正确");
+        }
+        user.setPassword(newPwd);
+        user.passwordEncoder();
+        userService.save(user);
+        return BaseResult.success();
+    }
 }
