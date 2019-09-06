@@ -13,11 +13,12 @@ server:
       #      timeout: 60
       cookie:
         name: FLERKEN_SID
-   # file-path: C:\project\springboot_xiongchao_blog\src\main\resources\static\ # win
+#    file-path: C:\project\springboot_xiongchao_blog\src\main\resources\static\ # win
   file-path: /Users/xiongchao/Desktop/myproject/springboot_xiongchao_blog/src/main/resources/static/ # mac
+#  file-path: /blog/images/ # Linux
 spring:
   profiles:
-    active: test
+    active: test # 运行环境
   application:
     name: api
   servlet:

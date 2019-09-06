@@ -51,6 +51,7 @@ public class EssayService {
         List<Tag> tags = essayDTO.getTags();
         List<Category> categorys = essayDTO.getCategorys();
         Essay essay = JSON.parseObject(JSON.toJSONString(essayDTO), Essay.class);
+        essay = essayRepository.save(essay);
         // 保存标签
         List<EssayTagMapping> essayTagMappings = new ArrayList<>();
         for (Tag tag : tags) {
@@ -64,7 +65,6 @@ public class EssayService {
             essayCategoryMappings.add(new EssayCategoryMapping(essay.getId(), category.getId()));
         }
         essayCategoryMappingRepository.saveAll(essayCategoryMappings);
-        essay = essayRepository.save(essay);
     }
 
     public List<EssayDTO> findAllByUserIdAndStatus(Integer userId, Integer status) {

@@ -42,7 +42,7 @@ public class Essay extends BaseEntity {
     private Integer star;
 
     @ApiModelProperty("序号")
-    @Column(columnDefinition = "int(11) default 0")
+    @Column(name = "`rank`", columnDefinition = "int(11) default 0")
     private Integer rank;
 
     @ApiModelProperty("状态 0：删除 1：正常")
