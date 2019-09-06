@@ -21,7 +21,7 @@ public class Tag extends BaseEntity {
 
 
     @ApiModelProperty("排序序号")
-    @Column(columnDefinition = "int(11) default 1")
+    @Column(name = "`rank`", columnDefinition = "int(11) default 1")
     private Integer rank;
 
     @ApiModelProperty("状态 0：隐藏 1：正常 -1：删除")
