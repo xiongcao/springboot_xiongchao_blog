@@ -77,7 +77,7 @@ public class TagController {
     @ApiOperation("查询所有标签")
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                    @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status) {
-        return BaseResult.success(tagService.findAllByUserIdAndStatus(adminId, status));
+        return BaseResult.success(tagService.findAllByUserIdAndStatus(1, status));
     }
 
     @GetMapping("findSuperAll")
@@ -88,7 +88,7 @@ public class TagController {
 
     @GetMapping("findTagNumbers")
     @ApiOperation("获取所有文章中标签使用次数最多的前几个标签")
-    public BaseResult findTagNumberList(@ApiParam("用户ID") @RequestParam(value = "userId", required = false) Integer userId){
+    public BaseResult findTagNumberList(@ApiParam("用户ID用户ID,传id则查改用户文章的标签，不传则查所有用户文章的标签") @RequestParam(value = "userId", required = false) Integer userId){
         List<Tag> tags = tagService.findTagNumber(userId);
         if (tags.size() > 10) {
             tags.subList(0, 10);
