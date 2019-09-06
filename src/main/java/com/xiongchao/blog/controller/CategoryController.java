@@ -77,7 +77,7 @@ public class CategoryController {
     @ApiOperation("查询所有类型")
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                               @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status) {
-        return BaseResult.success(categoryService.findAllByUserIdAndStatus(adminId, status));
+        return BaseResult.success(categoryService.findAllByUserIdAndStatus(1, status));
     }
 
     @GetMapping("findSuperAll")
@@ -88,7 +88,7 @@ public class CategoryController {
 
     @GetMapping("findCategoryNumbers")
     @ApiOperation("获取所有文章中分类使用次数最多的前几个类型")
-    public BaseResult findCategoryNumberList(@ApiParam("用户ID") @RequestParam(value = "userId", required = false) Integer userId){
+    public BaseResult findCategoryNumberList(@ApiParam("用户ID,传id则查改用户文章的分类，不传则查所有用户文章的分类") @RequestParam(value = "userId", required = false) Integer userId){
         List<Category> categories = categoryService.findCategoryNumber(userId);
         if (categories.size() > 10) {
             categories.subList(0, 10);
