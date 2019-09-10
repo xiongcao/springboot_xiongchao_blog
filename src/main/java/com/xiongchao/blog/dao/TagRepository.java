@@ -17,7 +17,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
      * @param status
      * @return
      */
-    @Query(value = "select * from tag c WHERE c.user_id = ?1 and c.status = ?2 ORDER BY c.rank DESC", nativeQuery = true)
+    @Query(value = "select * from tag c WHERE c.user_id = ?1 and c.status = ?2 ORDER BY c.rank DESC, c.id DESC", nativeQuery = true)
     List<Tag> findAllByUserIdAndStatus(Integer userId, Integer status);
 
 
@@ -37,7 +37,7 @@ public interface TagRepository extends JpaRepository<Tag, Integer> {
      * @param userId
      * @return
      */
-    @Query(value = "select * from tag c WHERE c.user_id = ? and c.status <> -1 ORDER BY c.rank DESC", nativeQuery = true)
+    @Query(value = "select * from tag c WHERE c.user_id = ? and c.status <> -1 ORDER BY c.rank DESC, c.id DESC", nativeQuery = true)
     List<Tag> findAllByUserIdAndStatus(Integer userId);
 
 
