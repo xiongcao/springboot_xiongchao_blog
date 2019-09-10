@@ -34,7 +34,7 @@ public class Essay extends BaseEntity {
     private String cover;
 
     @ApiModelProperty("浏览次数")
-    @Column(length = 11)
+    @Column(length = 11, columnDefinition = "int(11) default 0")
     private Integer browseNumber;
 
     @ApiModelProperty("点赞数")

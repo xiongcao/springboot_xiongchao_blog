@@ -24,7 +24,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
      * 查询数据库中所有公开的文章
      * @return
      */
-    @Query(value = "select * from category c WHERE c.status = 1 ORDER BY c.`rank` DESC", nativeQuery = true)
+    @Query(value = "select * from category c WHERE c.status = 1 ORDER BY c.`rank` DESC, c.id DESC", nativeQuery = true)
     List<Category> findAll();
 
     Category findByIdAndUserId(Integer id, Integer userId);
@@ -41,7 +41,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
      * @param userId
      * @return
      */
-    @Query(value = "select * from category c WHERE c.user_id = ? and c.status <> -1 ORDER BY c.`rank` DESC", nativeQuery = true)
+    @Query(value = "select * from category c WHERE c.user_id = ? and c.status <> -1 ORDER BY c.`rank` DESC, c.id DESC", nativeQuery = true)
     List<Category> findAllByUserIdAndStatus(Integer userId);
 
     /**

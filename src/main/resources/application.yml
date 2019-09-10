@@ -9,7 +9,7 @@ server:
     max-threads: 3000
   servlet:
     session:
-      timeout: 24h
+      timeout: 168h
       #      timeout: 60
       cookie:
         name: FLERKEN_SID
