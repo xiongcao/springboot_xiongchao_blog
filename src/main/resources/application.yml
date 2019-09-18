@@ -14,11 +14,11 @@ server:
       cookie:
         name: FLERKEN_SID
 #  file-path: C:\project\springboot_xiongchao_blog\src\main\resources\static\ # win
-  file-path: /Users/xiongchao/Desktop/myproject/springboot_xiongchao_blog/src/main/resources/static/ # mac
-#  file-path: /blog/images/ # Linux
+#  file-path: /Users/xiongchao/Desktop/myproject/springboot_xiongchao_blog/src/main/resources/static/ # mac
+  file-path: /blog/images/ # Linux
 spring:
   profiles:
-    active: test # 运行环境
+    active: prod # 运行环境
   application:
     name: api
   servlet:

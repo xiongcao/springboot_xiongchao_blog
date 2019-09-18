@@ -76,15 +76,14 @@ public class CategoryController {
     @GetMapping("findAll")
     @ApiOperation("查询所有类型")
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
-                              @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status,
-                              @ApiParam("名称") @RequestParam(value = "name", required = false) String name) {
-        return BaseResult.success(categoryService.findAll(1, status, name));
+                              @ApiParam("0:删除;1:正常;") @RequestParam(value = "status", required = false) Integer status) {
+        return BaseResult.success(categoryService.findAllByUserIdAndStatus(1, status));
     }
 
     @GetMapping("findSuperAll")
     @ApiOperation("查询超管所有类型")
     public BaseResult findSuperAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId) {
-        return BaseResult.success(categoryService.findAll(1, 1, null));
+        return BaseResult.success(categoryService.findAllByUserIdAndStatus(1, 1));
     }
 
     @GetMapping("findCategoryNumbers")

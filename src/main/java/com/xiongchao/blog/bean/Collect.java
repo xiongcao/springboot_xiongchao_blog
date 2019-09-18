@@ -15,7 +15,7 @@ import javax.validation.constraints.NotNull;
 @DynamicInsert
 public class Collect extends BaseEntity {
 
-    @ApiModelProperty("状态 0：取消收藏 1：已收藏 -1：删除")
+    @ApiModelProperty("状态 0：删除 1：正常")
     @Column(columnDefinition = "int(11) default 1")
     private Integer status;
 

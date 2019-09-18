@@ -4,12 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.xiongchao.blog.bean.Tag;
 import com.xiongchao.blog.dao.EssayTagMappingRepository;
 import com.xiongchao.blog.dao.TagRepository;
-import com.xiongchao.blog.util.SqlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -36,24 +34,11 @@ public class TagService {
         return tagRepository.saveAll(tags);
     }
 
-    public List<Tag> findAll(Integer userId, Integer status, String name) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("SELECT " + SqlUtil.sqlGenerate("c", Tag.class) + " FROM tag c WHERE c.user_id = " + userId);
-        if (!StringUtils.isEmpty(name)) {
-            sb.append(" AND c.`name` LIKE '%" + name + "%'" );
+    public List<Tag> findAllByUserIdAndStatus(Integer userId, Integer status){
+        if(status == null){
+            return tagRepository.findAllByUserIdAndStatus(userId);
         }
-        if (status != null) {
-            sb.append(" AND c.`status` = " + status);
-        }
-        sb.append(" ORDER BY c.`rank` DESC, c.id DESC");
-        Query query = em.createNativeQuery(sb.toString());
-        List<Tag> tags = new ArrayList<>();
-        List<Object> objects = query.getResultList();
-        for (Object o : objects) {
-            Object[] obj = (Object[]) o;
-            tags.add(SqlUtil.toBean(obj, Tag.class));
-        }
-        return tags;
+        return tagRepository.findAllByUserIdAndStatus(userId, status);
     }
 
     @Cacheable(value = "findTagById", key = "#id")

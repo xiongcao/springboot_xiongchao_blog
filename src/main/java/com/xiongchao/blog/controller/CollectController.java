@@ -51,14 +51,7 @@ public class CollectController {
         }
         collect.setUserId(adminId);
         collectService.save(collect);
-        Essay essay = essayService.findById(collect.getEssayId()).orElseThrow(()-> new RuntimeException("没有查到次文章"));
-        if (collect.getStatus() == 1) { // 收藏
-            essay.setCollectCount(essay.getCollectCount() + 1);
-        } else {  // 取消收藏
-            essay.setCollectCount(essay.getCollectCount() - 1);
-        }
-        essayService.save(essay);
-        return BaseResult.success(collect);
+        return BaseResult.success();
     }
 
     @PostMapping("updateStatus/{id}/{status}")
