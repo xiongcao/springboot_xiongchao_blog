@@ -35,7 +35,4 @@ public interface EssayRepository extends JpaRepository<Essay, Integer> {
      */
     @Query(value = "select * from essay c WHERE c.user_id = ? and c.status <> 0 ORDER BY c.rank DESC", nativeQuery = true)
     List<Essay> findAllByUserIdNotDelete(Integer userId);
-
-    Essay findByIdAndUserId(Integer id, Integer userId);
-
 }

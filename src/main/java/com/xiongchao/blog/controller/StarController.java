@@ -4,8 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xiongchao.blog.DTO.CollectDTO;
 import com.xiongchao.blog.bean.*;
-import com.xiongchao.blog.service.CollectService;
 import com.xiongchao.blog.service.EssayService;
+import com.xiongchao.blog.service.StarService;
 import com.xiongchao.blog.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -13,25 +13,23 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-@Api(description = "收藏管理")
+@Api(description = "点赞管理")
 @RestController
-@RequestMapping("collect")
-public class CollectController {
+@RequestMapping("star")
+public class StarController {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final Logger loggerUser = LoggerFactory.getLogger("ADMIN");
 
     @Autowired
-    private CollectService collectService;
+    private StarService starService;
 
     @Autowired
     private UserService userService;
@@ -42,23 +40,23 @@ public class CollectController {
     @PostMapping("save")
     @ApiOperation("保存")
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
-                           @Valid @RequestBody Collect collect) {
-        if(collect.getId() != null){
-            Collect collect1 = collectService.findByIdAndUserId(collect.getId(), adminId);
-            if (null == collect1) {
-                return BaseResult.failure("该收藏不存在或非本人收藏");
+                           @Valid @RequestBody Star star) {
+        if(star.getId() != null){
+            Star star1 = starService.findByIdAndUserId(star.getId(), adminId);
+            if (null == star1) {
+                return BaseResult.failure("没有查询到");
             }
         }
-        collect.setUserId(adminId);
-        collectService.save(collect);
-        Essay essay = essayService.findById(collect.getEssayId()).orElseThrow(()-> new RuntimeException("没有查到次文章"));
-        if (collect.getStatus() == 1) { // 收藏
-            essay.setCollectCount(essay.getCollectCount() + 1);
-        } else {  // 取消收藏
-            essay.setCollectCount(essay.getCollectCount() - 1);
+        star.setUserId(adminId);
+        starService.save(star);
+        Essay essay = essayService.findById(star.getEssayId()).orElseThrow(()-> new RuntimeException("没有查到次文章"));
+        if (star.getStatus() == 1) { // 点赞
+            essay.setStarCount(essay.getStarCount() + 1);
+        } else {  // 取消点赞
+            essay.setStarCount(essay.getStarCount() - 1);
         }
         essayService.save(essay);
-        return BaseResult.success(collect);
+        return BaseResult.success(star);
     }
 
     @PostMapping("updateStatus/{id}/{status}")
@@ -66,22 +64,22 @@ public class CollectController {
     public BaseResult updateStatus(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                    @ApiParam("ID") @PathVariable("id") Integer id,
                                    @ApiParam("0:删除;1:正常;") @PathVariable("status") Integer status) {
-        Collect collect = collectService.findById(id).orElseThrow(()-> new RuntimeException("没有找到此收藏"));
-        collect.setStatus(status);
-        collectService.save(collect);
+        Star star = starService.findById(id).orElseThrow(()-> new RuntimeException("没有查询到"));
+        star.setStatus(status);
+        starService.save(star);
         return BaseResult.success();
     }
 
     @GetMapping("findAll")
-    @ApiOperation("查询所有收藏文章")
+    @ApiOperation("查询所有点赞文章")
     public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId) {
         List<CollectDTO> collectDTOS = new ArrayList<>();
-        List<Collect> collects  = collectService.findAllByUserId(adminId);
-        for (Collect collect: collects) {
-            CollectDTO collectDTO = JSONObject.parseObject(JSON.toJSONString(collect), CollectDTO.class);
-            Essay essay = essayService.findById(collect.getEssayId()).orElseThrow(() ->  new RuntimeException("文章不存在"));
+        List<Star> stars  = starService.findAllByUserId(adminId);
+        for (Star star: stars) {
+            CollectDTO collectDTO = JSONObject.parseObject(JSON.toJSONString(star), CollectDTO.class);
+            Essay essay = essayService.findById(star.getEssayId()).orElseThrow(() ->  new RuntimeException("文章不存在"));
             collectDTO.setTitle(essay.getTitle());
-            User user = userService.findById(collect.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
+            User user = userService.findById(star.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
             collectDTO.setName(user.getName());
             collectDTO.setNickname(user.getNickname());
             collectDTO.setRemark(user.getIntroduce());
