@@ -12,9 +12,11 @@ import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -40,7 +42,7 @@ public class EssayController {
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                            @Valid @RequestBody EssayDTO essayDTO) {
         if(essayDTO.getId() != null){
-            Essay essay = essayService.findByIdAndUserId(essayDTO.getId(), adminId);
+            Essay essay = essayService.findByIdAndUserId(essayDTO.getId());
             if (null == essay) {
                 return BaseResult.failure("该文章不存在或非本人文章");
             }
@@ -116,13 +118,18 @@ public class EssayController {
     @ApiOperation("后台根据文章id查询文章信息")
     public BaseResult detail(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                              @ApiParam("ID") @PathVariable("id") Integer id) {
-        return BaseResult.success(essayService.findByIdAndUserId(id, adminId));
+        return BaseResult.success(essayService.findByIdAndUserId(id));
     }
 
     @GetMapping("detail/{id}")
     @ApiOperation("前台根据文章id查询文章信息")
-    public BaseResult detail(@ApiParam("ID") @PathVariable("id") Integer id) {
-        return BaseResult.success(essayService.findEssayJoinCommentById(id, 2));
+    public BaseResult detail(@ApiParam("ID") @PathVariable("id") Integer id, HttpSession session) {
+        Object session_adminId = session.getAttribute(Constants.ADMIN_ID);
+        Integer adminId = null;
+        if (!StringUtils.isEmpty(session_adminId)) {
+            adminId = Integer.parseInt(session_adminId.toString());
+        }
+        return BaseResult.success(essayService.findEssayJoinCommentById(id, adminId));
     }
 
 }

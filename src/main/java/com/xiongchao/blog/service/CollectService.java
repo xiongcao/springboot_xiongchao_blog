@@ -15,20 +15,24 @@ public class CollectService {
     @Autowired
     private CollectRepository collectRepository;
 
-    public Collect save(Collect collect){
+    public Collect save(Collect collect) {
         return collectRepository.save(collect);
     }
 
-    public List<Collect> findAllByUserId(Integer userId){
+    public List<Collect> findAllByUserId(Integer userId) {
         return collectRepository.findAllByUserId(userId);
     }
 
-    public Optional<Collect> findById(Integer id){
+    public Optional<Collect> findById(Integer id) {
         return collectRepository.findById(id);
     }
 
-    public Collect findByIdAndUserId(Integer id, Integer userId){
+    public Collect findByIdAndUserId(Integer id, Integer userId) {
         return collectRepository.findByIdAndUserId(id, userId);
+    }
+
+    public Collect findByEssayIdAndUserId(Integer essayId, Integer userId) {
+        return collectRepository.findByEssayIdAndUserId(essayId, userId);
     }
 
 
