@@ -9,13 +9,13 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.validation.constraints.NotNull;
 
-@ApiModel(description = "收藏")
+@ApiModel(description = "点赞")
 @Entity
 @DynamicUpdate
 @DynamicInsert
-public class Collect extends BaseEntity {
+public class Star extends BaseEntity {
 
-    @ApiModelProperty("状态 0：取消收藏 1：已收藏 -1：删除")
+    @ApiModelProperty("状态 0：取消点赞 1：已点赞 -1：删除")
     @Column(columnDefinition = "int(11) default 1")
     private Integer status;
 

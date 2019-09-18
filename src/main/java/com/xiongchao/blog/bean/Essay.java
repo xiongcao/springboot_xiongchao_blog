@@ -37,9 +37,13 @@ public class Essay extends BaseEntity {
     @Column(length = 11, columnDefinition = "int(11) default 0")
     private Integer browseNumber;
 
+    @ApiModelProperty("被收藏数")
+    @Column(columnDefinition = "int(11) default 0")
+    private Integer collectCount;
+
     @ApiModelProperty("点赞数")
     @Column(columnDefinition = "int(11) default 0")
-    private Integer star;
+    private Integer starCount;
 
     @ApiModelProperty("序号")
     @Column(name = "`rank`", columnDefinition = "int(11) default 0")
@@ -117,12 +121,20 @@ public class Essay extends BaseEntity {
         this.cover = cover;
     }
 
-    public Integer getStar() {
-        return star;
+    public Integer getCollectCount() {
+        return collectCount;
     }
 
-    public void setStar(Integer star) {
-        this.star = star;
+    public void setCollectCount(Integer collectCount) {
+        this.collectCount = collectCount;
+    }
+
+    public Integer getStarCount() {
+        return starCount;
+    }
+
+    public void setStarCount(Integer starCount) {
+        this.starCount = starCount;
     }
 
     public String getDes() {

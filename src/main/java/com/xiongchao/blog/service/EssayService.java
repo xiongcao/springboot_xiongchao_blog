@@ -41,6 +41,12 @@ public class EssayService {
     private CommentService commentService;
 
     @Autowired
+    private CollectService collectService;
+
+    @Autowired
+    private StarService starService;
+
+    @Autowired
     private EntityManager em;
 
     public Essay save(Essay essay) {
@@ -161,12 +167,12 @@ public class EssayService {
     }
 
     @Cacheable(value = "findEssayJoinCommentById", key = "#id")
-    public EssayDTO findEssayJoinCommentById(Integer id, Integer status) {
-        Essay essay = essayRepository.findByIdAndUserId(id, status);
+    public EssayDTO findEssayJoinCommentById(Integer id, Integer adminId) {
+        Optional<Essay> essay0 = findById(id);
         // 添加浏览记录
-        Essay essay0 = JSONObject.parseObject(JSON.toJSONString(essay), Essay.class);
-        essay0.setBrowseNumber(essay0.getBrowseNumber() + 1);
-        essayRepository.save(essay0);
+        Essay essay = JSONObject.parseObject(JSON.toJSONString(essay0), Essay.class);
+        essay.setBrowseNumber(essay.getBrowseNumber() + 1);
+        essayRepository.save(essay);
         EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay), EssayDTO.class);
         // 查询类型
         essayDTO.setCategorys(categoryRepository.findListByEssayId(essay.getId()));
@@ -174,14 +180,24 @@ public class EssayService {
         essayDTO.setTags(tagRepository.findListByEssayId(essay.getId()));
         List<Comment> comments = commentService.findByEssayId(essay.getId());
         essayDTO.setComments(comments);
+        // 是否已被收藏
+        Collect collect = null;
+        // 是否已点赞
+        Star star = null;
+        if (adminId != null && adminId != 0) {
+            collect = collectService.findByEssayIdAndUserId(essay.getId(), adminId);
+            star = starService.findByEssayIdAndUserId(essay.getId(), adminId);
+        }
+        essayDTO.setCollect(collect);
+        essayDTO.setStar(star);
         return essayDTO;
     }
 
-    public EssayDTO findByIdAndUserId(Integer id, Integer userId) {
-        Essay essay = essayRepository.findByIdAndUserId(id, userId);
+    public EssayDTO findByIdAndUserId(Integer id) {
+        Optional<Essay> essay = findById(id);
         EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay), EssayDTO.class);
-        List<Tag> tags = tagRepository.findListByEssayId(essay.getId());
-        List<Category> categorys = categoryRepository.findListByEssayId(essay.getId());
+        List<Tag> tags = tagRepository.findListByEssayId(essayDTO.getId());
+        List<Category> categorys = categoryRepository.findListByEssayId(essayDTO.getId());
         essayDTO.setTags(tags);
         essayDTO.setCategorys(categorys);
         return essayDTO;

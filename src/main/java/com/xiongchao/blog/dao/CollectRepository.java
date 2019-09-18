@@ -16,4 +16,7 @@ public interface CollectRepository extends JpaRepository<Collect, Integer> {
 
     @Query(value = "SELECT * from collect c WHERE c.user_id = ? AND c.status = 1", nativeQuery = true)
     List<Collect> findAllByUserId(Integer userId);
+
+
+    Collect findByEssayIdAndUserId(Integer essayId, Integer userId);
 }

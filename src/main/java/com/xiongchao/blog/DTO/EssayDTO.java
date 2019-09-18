@@ -1,9 +1,6 @@
 package com.xiongchao.blog.DTO;
 
-import com.xiongchao.blog.bean.Category;
-import com.xiongchao.blog.bean.Comment;
-import com.xiongchao.blog.bean.Essay;
-import com.xiongchao.blog.bean.Tag;
+import com.xiongchao.blog.bean.*;
 
 import java.util.List;
 
@@ -20,6 +17,10 @@ public class EssayDTO extends Essay {
     public List<Comment> getComments() {
         return comments;
     }
+
+    private Star star;
+
+    private Collect collect;
 
     public void setComments(List<Comment> comments) {
         this.comments = comments;
@@ -46,6 +47,22 @@ public class EssayDTO extends Essay {
     }
 
     public void setCategorys(List<Category> categorys) {
-            this.categorys = categorys;
+        this.categorys = categorys;
+    }
+
+    public Star getStar() {
+        return star;
+    }
+
+    public void setStar(Star star) {
+        this.star = star;
+    }
+
+    public Collect getCollect() {
+        return collect;
+    }
+
+    public void setCollect(Collect collect) {
+        this.collect = collect;
     }
 }

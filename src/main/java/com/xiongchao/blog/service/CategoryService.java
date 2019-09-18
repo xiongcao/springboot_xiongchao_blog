@@ -2,12 +2,15 @@ package com.xiongchao.blog.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiongchao.blog.bean.Category;
+import com.xiongchao.blog.bean.Essay;
 import com.xiongchao.blog.dao.CategoryRepository;
 import com.xiongchao.blog.dao.EssayCategoryMappingRepository;
+import com.xiongchao.blog.util.SqlUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
@@ -36,11 +39,24 @@ public class CategoryService {
         return categoryRepository.saveAll(categories);
     }
 
-    public List<Category> findAllByUserIdAndStatus(Integer userId, Integer status) {
-        if (status == null) {
-            return categoryRepository.findAllByUserIdAndStatus(userId);
+    public List<Category> findAll(Integer userId, Integer status, String name) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT " + SqlUtil.sqlGenerate("c", Category.class) + " FROM category c WHERE c.user_id = " + userId);
+        if (!StringUtils.isEmpty(name)) {
+            sb.append(" AND c.`name` LIKE '%" + name + "%'" );
         }
-        return categoryRepository.findAllByUserIdAndStatus(userId, status);
+        if (status != null) {
+            sb.append(" AND c.`status` = " + status);
+        }
+        sb.append(" ORDER BY c.`rank` DESC, c.id DESC");
+        Query query = em.createNativeQuery(sb.toString());
+        List<Category> categories = new ArrayList<>();
+        List<Object> objects = query.getResultList();
+        for (Object o : objects) {
+            Object[] obj = (Object[]) o;
+            categories.add(SqlUtil.toBean(obj, Category.class));
+        }
+        return categories;
     }
 
     @Cacheable(value = "findCategoryById", key = "#id")
@@ -82,8 +98,8 @@ public class CategoryService {
         for (int i = 0; i < objects.size(); i++) {
             Object id = objects.get(i);
             if (id != null) {
-                Category tag = findById(Integer.parseInt(id.toString())).orElseThrow(()-> new RuntimeException("没有此类型"));
-                categories.add(tag);
+                Category category = findById(Integer.parseInt(id.toString())).orElseThrow(()-> new RuntimeException("没有此类型"));
+                categories.add(category);
             }
         }
         return categories;
