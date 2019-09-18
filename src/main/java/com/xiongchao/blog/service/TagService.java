@@ -53,7 +53,7 @@ public class TagService {
             Object[] obj = (Object[]) o;
             tags.add(SqlUtil.toBean(obj, Tag.class));
         }
-        return tags;
+        return tags; 
     }
 
     @Cacheable(value = "findTagById", key = "#id")
