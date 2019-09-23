@@ -22,6 +22,8 @@ public class EssayDTO extends Essay {
 
     private Collect collect;
 
+    private User user;
+
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
@@ -64,5 +66,13 @@ public class EssayDTO extends Essay {
 
     public void setCollect(Collect collect) {
         this.collect = collect;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

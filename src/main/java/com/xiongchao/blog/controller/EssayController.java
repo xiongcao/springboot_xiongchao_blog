@@ -6,6 +6,7 @@ import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.service.CategoryService;
 import com.xiongchao.blog.service.EssayService;
 import com.xiongchao.blog.service.TagService;
+import com.xiongchao.blog.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -36,6 +37,9 @@ public class EssayController {
 
     @Autowired
     private TagService tagService;
+
+    @Autowired
+    private UserService userService;
 
     @PostMapping("save")
     @ApiOperation("保存文章")
@@ -129,7 +133,10 @@ public class EssayController {
         if (!StringUtils.isEmpty(session_adminId)) {
             adminId = Integer.parseInt(session_adminId.toString());
         }
-        return BaseResult.success(essayService.findEssayJoinCommentById(id, adminId));
+        EssayDTO essayDTO = essayService.findEssayJoinCommentById(id, adminId);
+        User user = userService.findById(essayDTO.getUserId()).orElseThrow(()-> new RuntimeException("没有查到用户信息"));
+        essayDTO.setUser(user);
+        return BaseResult.success(essayDTO);
     }
 
 }

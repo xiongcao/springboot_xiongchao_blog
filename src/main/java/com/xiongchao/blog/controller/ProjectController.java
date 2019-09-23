@@ -58,7 +58,7 @@ public class ProjectController {
     @GetMapping("admin/findAll")
     @ApiOperation("后台查询所有")
     public BaseResult findAllByAdmin(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId) {
-        return BaseResult.success(projectService.findAll());
+        return BaseResult.success(projectService.findAllByUserId(adminId));
     }
 
     @GetMapping("findAll")
