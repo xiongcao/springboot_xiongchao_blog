@@ -23,7 +23,6 @@ public class Essay extends BaseEntity {
     private Integer type;
 
     @ApiModelProperty("简要描述")
-    @Column(unique = true, length = 225, nullable = false)
     private String des;
 
     @ApiModelProperty("正文")
