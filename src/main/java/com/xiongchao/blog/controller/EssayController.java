@@ -136,6 +136,8 @@ public class EssayController {
         EssayDTO essayDTO = essayService.findEssayJoinCommentById(id, adminId);
         User user = userService.findById(essayDTO.getUserId()).orElseThrow(()-> new RuntimeException("没有查到用户信息"));
         essayDTO.setUser(user);
+        essayDTO.setPreEssay(essayService.findPreEssay(id, essayDTO.getUserId()));
+        essayDTO.setNextEssay(essayService.findNextEssay(id, essayDTO.getUserId()));
         return BaseResult.success(essayDTO);
     }
 

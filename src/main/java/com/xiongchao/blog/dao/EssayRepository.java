@@ -35,4 +35,22 @@ public interface EssayRepository extends JpaRepository<Essay, Integer> {
      */
     @Query(value = "select * from essay c WHERE c.user_id = ? and c.status <> 0 ORDER BY c.rank DESC", nativeQuery = true)
     List<Essay> findAllByUserIdNotDelete(Integer userId);
+
+    /**
+     * 查询用户当前文章的上一篇文章
+      * @param id
+     * @param userId
+     * @return
+     */
+    @Query(value = "select * FROM essay where id < ?1 AND user_id = ?2 order by id DESC limit 1", nativeQuery = true)
+    Essay findPreEssay(Integer id, Integer userId);
+
+    /**
+     * 查询用户当前文章的下一篇文章
+     * @param id
+     * @param userId
+     * @return
+     */
+    @Query(value = "select * FROM essay where id > ?1 AND user_id = ?2 order by id asc limit 1", nativeQuery = true)
+    Essay findNextEssay(Integer id, Integer userId);
 }

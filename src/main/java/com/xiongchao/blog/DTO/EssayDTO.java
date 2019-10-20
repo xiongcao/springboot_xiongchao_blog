@@ -24,6 +24,10 @@ public class EssayDTO extends Essay {
 
     private User user;
 
+    private Essay preEssay;
+
+    private Essay nextEssay;
+
     public void setComments(List<Comment> comments) {
         this.comments = comments;
     }
@@ -74,5 +78,21 @@ public class EssayDTO extends Essay {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Essay getPreEssay() {
+        return preEssay;
+    }
+
+    public void setPreEssay(Essay preEssay) {
+        this.preEssay = preEssay;
+    }
+
+    public Essay getNextEssay() {
+        return nextEssay;
+    }
+
+    public void setNextEssay(Essay nextEssay) {
+        this.nextEssay = nextEssay;
     }
 }

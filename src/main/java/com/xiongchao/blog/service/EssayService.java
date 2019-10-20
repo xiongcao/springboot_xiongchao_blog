@@ -229,4 +229,12 @@ public class EssayService {
         List<Object> objects = query.getResultList();
         return Long.parseLong(objects.get(0).toString());
     }
+
+    public Essay findPreEssay(Integer id, Integer userId) {
+        return essayRepository.findPreEssay(id, userId);
+    }
+
+    public Essay findNextEssay(Integer id, Integer userId) {
+        return essayRepository.findNextEssay(id, userId);
+    }
 }
