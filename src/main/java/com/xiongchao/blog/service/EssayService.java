@@ -2,6 +2,7 @@ package com.xiongchao.blog.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xiongchao.blog.DTO.CommentDTO;
 import com.xiongchao.blog.DTO.EssayDTO;
 import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.dao.*;
@@ -45,6 +46,9 @@ public class EssayService {
 
     @Autowired
     private StarService starService;
+
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private EntityManager em;
@@ -178,8 +182,20 @@ public class EssayService {
         essayDTO.setCategorys(categoryRepository.findListByEssayId(essay.getId()));
         // 查询标签
         essayDTO.setTags(tagRepository.findListByEssayId(essay.getId()));
+        // 查询评论
+        List<CommentDTO> commentDTOS = new ArrayList<>();
         List<Comment> comments = commentService.findByEssayId(essay.getId());
-        essayDTO.setComments(comments);
+        for (Comment comment: comments) {
+            CommentDTO commentDTO = JSONObject.parseObject(JSON.toJSONString(comment), CommentDTO.class);
+            // 查询评论者
+            User user = userService.findById(comment.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
+            // 查询被评论者
+            User toUser = userService.findById(comment.getToUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
+            commentDTO.setUser(user);
+            commentDTO.setToUser(toUser);
+            commentDTOS.add(commentDTO);
+        }
+        essayDTO.setCommentDTOS(commentDTOS);
         // 是否已被收藏
         Collect collect = null;
         // 是否已点赞

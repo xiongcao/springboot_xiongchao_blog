@@ -28,9 +28,9 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
      * @param essayId
      * @return
      */
-    @Query(value = "SELECT COUNT(*) commentNumber FROM `comment` c WHERE c.essay_id = ?", nativeQuery = true)
+    @Query(value = "SELECT COUNT(*) commentNumber FROM `comment` c WHERE c.essay_id = ? AND c.status = 1", nativeQuery = true)
     Integer findNumberByEssayId(Integer essayId);
 
-    @Query(value = "SELECT * FROM `comment` c WHERE c.essay_id = ?", nativeQuery = true)
+    @Query(value = "SELECT * FROM `comment` c WHERE c.essay_id = ? AND c.status = 1 ORDER BY c.created_date DESC", nativeQuery = true)
     List<Comment> findByEssayId(Integer essayId);
 }

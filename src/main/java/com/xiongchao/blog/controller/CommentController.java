@@ -49,14 +49,60 @@ public class CommentController {
         return BaseResult.success();
     }
 
+    @PostMapping("addLikes")
+    @ApiOperation("点赞")
+    public BaseResult addLikes(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                               @RequestParam(value = "id", required = false) @ApiParam("评论ID") Integer id) {
+        Comment comment = commentService.findById(id).orElseThrow(()-> new RuntimeException("没有此评论"));
+        if (comment.getLikeFlag() == 0 && comment.getDislikeFlag() == 0) { // 未点赞、未踩—>执行点赞
+            comment.setLikeFlag(1);
+            comment.setLikes(comment.getLikes() + 1);
+        } else if (comment.getDislikeFlag() == 1) { // 踩了-> 取消踩，执行点赞
+            comment.setLikeFlag(1);
+            comment.setLikes(comment.getLikes() + 1);
+            comment.setDislikes(comment.getDislikes() - 1);
+            comment.setDislikeFlag(0);
+        } else { // 已点赞->取消点赞
+            comment.setLikeFlag(0);
+            comment.setLikes(comment.getLikes() - 1);
+        }
+
+        commentService.save(comment);
+        return BaseResult.success();
+    }
+
+
+    @PostMapping("addDislikes")
+    @ApiOperation("踩踩")
+    public BaseResult addDislikes(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                                  @RequestParam(value = "id", required = false) @ApiParam("评论ID") Integer id) {
+        Comment comment = commentService.findById(id).orElseThrow(()-> new RuntimeException("没有此评论"));
+        if (comment.getDislikeFlag() == 0 && comment.getLikeFlag() == 0) { // 未点赞、未踩—>执行踩踩
+            comment.setDislikeFlag(1);
+            comment.setDislikes(comment.getDislikes() + 1);
+        } else if (comment.getLikeFlag() == 1) { // // 点赞-> 取消点赞，执行踩
+            comment.setLikeFlag(0);
+            comment.setLikes(comment.getLikes() - 1);
+            comment.setDislikes(comment.getDislikes() + 1);
+            comment.setDislikeFlag(1);
+        } else { // 已踩->取消踩
+            comment.setDislikeFlag(0);
+            comment.setDislikes(comment.getDislikes() - 1);
+        }
+        commentService.save(comment);
+        return BaseResult.success();
+    }
+
     @PostMapping("updateStatus/{id}/{status}")
     @ApiOperation("修改状态")
     public BaseResult updateStatus(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                    @ApiParam("ID") @PathVariable("id") Integer id,
                                    @ApiParam("0:删除;1:正常;") @PathVariable("status") Integer status) {
         Comment comment = commentService.findById(id).orElseThrow(()-> new RuntimeException("没有此评论"));
+        if (comment.getUserId() != adminId) {
+            return BaseResult.failure("不能删除别人的评论");
+        }
         comment.setStatus(status);
-        comment.setUserId(adminId);
         commentService.save(comment);
         return BaseResult.success();
     }
@@ -76,6 +122,26 @@ public class CommentController {
             commentDTO.setNickname(user.getNickname());
             commentDTO.setRemark(user.getIntroduce());
             commentDTO.setTitle(essay.getTitle());
+            commentDTOS.add(commentDTO);
+        }
+        return BaseResult.success(commentDTOS);
+    }
+
+    @GetMapping("findAllByEssayId/{id}")
+    @ApiOperation("查询所有评论")
+    public BaseResult findAllByEssayId(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                                       @ApiParam("ID") @PathVariable("id") Integer id) {
+        // 查询评论
+        List<CommentDTO> commentDTOS = new ArrayList<>();
+        List<Comment> comments = commentService.findByEssayId(id);
+        for (Comment comment: comments) {
+            CommentDTO commentDTO = JSONObject.parseObject(JSON.toJSONString(comment), CommentDTO.class);
+            // 查询评论者
+            User user = userService.findById(comment.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
+            // 查询被评论者
+            User toUser = userService.findById(comment.getToUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
+            commentDTO.setUser(user);
+            commentDTO.setToUser(toUser);
             commentDTOS.add(commentDTO);
         }
         return BaseResult.success(commentDTOS);

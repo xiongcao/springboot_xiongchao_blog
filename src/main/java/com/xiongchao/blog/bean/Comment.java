@@ -19,7 +19,7 @@ public class Comment extends BaseEntity {
     @Column(unique = true, length = 10000, nullable = false)
     private String content;
 
-    @ApiModelProperty("父评论ID")
+    @ApiModelProperty("父评论ID， 0：楼主，其他：回复楼主")
     private Integer pid;
 
     @ApiModelProperty("被评论者ID")
@@ -39,6 +39,23 @@ public class Comment extends BaseEntity {
     @ApiModelProperty("评论者ID")
     @Column(columnDefinition = "int(11)", nullable = false)
     private Integer userId;
+
+    @ApiModelProperty("点赞数")
+    @Column(columnDefinition = "int(11) default 0")
+    private Integer likes;
+
+    @ApiModelProperty("踩踩数")
+    @Column(columnDefinition = "int(11) default 0")
+    private Integer dislikes;
+
+    @ApiModelProperty("是否已点赞 1:已点赞 0: 未点赞")
+    @Column(columnDefinition = "int(11) default 0")
+    private Integer likeFlag;
+
+    @ApiModelProperty("是否已踩 1:已踩 0: 未踩")
+    @Column(columnDefinition = "int(11) default 0")
+    private Integer dislikeFlag;
+
 
     public String getContent() {
         return content;
@@ -86,5 +103,37 @@ public class Comment extends BaseEntity {
 
     public void setUserId(Integer userId) {
         this.userId = userId;
+    }
+
+    public Integer getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Integer likes) {
+        this.likes = likes;
+    }
+
+    public Integer getDislikes() {
+        return dislikes;
+    }
+
+    public void setDislikes(Integer dislikes) {
+        this.dislikes = dislikes;
+    }
+
+    public Integer getLikeFlag() {
+        return likeFlag;
+    }
+
+    public void setLikeFlag(Integer likeFlag) {
+        this.likeFlag = likeFlag;
+    }
+
+    public Integer getDislikeFlag() {
+        return dislikeFlag;
+    }
+
+    public void setDislikeFlag(Integer dislikeFlag) {
+        this.dislikeFlag = dislikeFlag;
     }
 }

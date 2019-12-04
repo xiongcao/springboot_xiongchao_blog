@@ -12,11 +12,7 @@ public class EssayDTO extends Essay {
 
     private List<Category> categorys;
 
-    private List<Comment> comments;
-
-    public List<Comment> getComments() {
-        return comments;
-    }
+    private List<CommentDTO> commentDTOS;
 
     private Star star;
 
@@ -28,8 +24,12 @@ public class EssayDTO extends Essay {
 
     private Essay nextEssay;
 
-    public void setComments(List<Comment> comments) {
-        this.comments = comments;
+    public List<CommentDTO> getCommentDTOS() {
+        return commentDTOS;
+    }
+
+    public void setCommentDTOS(List<CommentDTO> commentDTOS) {
+        this.commentDTOS = commentDTOS;
     }
 
     public Integer getCommentNumber() {
