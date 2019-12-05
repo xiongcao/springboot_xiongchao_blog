@@ -2,14 +2,13 @@ package com.xiongchao.blog.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.xiongchao.blog.DTO.UserDTO;
-import com.xiongchao.blog.bean.BaseResult;
-import com.xiongchao.blog.bean.Constants;
-import com.xiongchao.blog.bean.User;
+import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.service.UserService;
 import com.xiongchao.blog.util.IPUtil;
 import com.xiongchao.blog.util.SmsVerifyCodeUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -189,6 +188,22 @@ public class UserController {
         return BaseResult.success("添加成功");
     }
 
+    @PostMapping("unlock")
+    @ResponseBody
+    @ApiOperation("锁定和解锁用户")
+    public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                           @RequestParam("id") Integer id,
+                           @RequestParam(value = "status", required = false) @ApiParam("1: 正常 3：超管锁定") Integer status) {
+        User user = userService.findById(id).orElseThrow(() -> new RuntimeException("用户不存在"));
+        user.setStatus(status);
+        if (status == 1) { // 解锁
+            user.setLockedDate(null);
+            user.setPasswordAttemptCount(0);
+        }
+        userService.save(user);
+        return BaseResult.success("成功");
+    }
+
     @PostMapping("register")
     @ApiOperation("注册")
     public String register(@Valid @RequestBody User user) {
@@ -234,5 +249,15 @@ public class UserController {
         user.passwordEncoder();
         userService.save(user);
         return BaseResult.success();
+    }
+
+    @GetMapping("findAll")
+    @ResponseBody
+    @ApiOperation("查询所有用户，只有超管有权限")
+    public BaseResult findAll(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId, PageWithSearch page) {
+        if (adminId != 1) {
+            return BaseResult.failure("没有权限");
+        }
+        return BaseResult.success(userService.findUserAll(page));
     }
 }

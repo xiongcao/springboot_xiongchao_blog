@@ -9,7 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.cors.CorsConfiguration;
 
 /**
- * @author William Guo
+ * @author Xiong Chao
  */
 @Configuration
 @EnableWebSecurity

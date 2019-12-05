@@ -58,7 +58,7 @@ public class UserService {
     }
 
 
-    public Page<User> findUserAll(PageWithSearch pageWithSearch, Integer userId){
+    public Page<User> findUserAll(PageWithSearch pageWithSearch){
         String field = pageWithSearch.getField();
         String value = pageWithSearch.getValue();
         Integer page = pageWithSearch.defaultPage(0);
@@ -66,7 +66,7 @@ public class UserService {
 
         StringBuilder sb = new StringBuilder();
         sb.append(" select " + SqlUtil.sqlGenerate("u", User.class) + " from user u where 1 = 1 ");
-        if (null != userId) sb.append(" and u.admin_id = " + userId + " "); // 超管查询所有用户信息
+//        if (null != userId) sb.append(" and u.id = " + userId + " "); // 超管查询所有用户信息
 
         if (!StringUtils.isEmpty(field) && !StringUtils.isEmpty(value)) {   // 搜索条件
             sb.append(" and u." + SqlUtil.camelToUnderline(field) + " like '"+ value +"' ");
@@ -87,16 +87,16 @@ public class UserService {
             return new PageImpl<>(Collections.emptyList(), PageRequest.of(page, size), 0);
         }
 
-        return new PageImpl<>(users, PageRequest.of(page, size), findListCount(pageWithSearch, userId));
+        return new PageImpl<>(users, PageRequest.of(page, size), findListCount(pageWithSearch));
 
     }
 
-    public Long findListCount(PageWithSearch pageWithSearch, Integer userId) {
+    public Long findListCount(PageWithSearch pageWithSearch) {
         String field = pageWithSearch.getField();
         String value = pageWithSearch.getValue();
 
         StringBuilder sb = new StringBuilder();
-        sb.append(" select count(*) from user u where u.user_id = " + userId + " ");
+        sb.append(" select count(*) from user u where 1 = 1 ");
         if (!StringUtils.isEmpty(field) && !StringUtils.isEmpty(value)) {//无搜索条件
             sb.append(" and u." + SqlUtil.camelToUnderline(field) + " like '"+ value +"' ");
         }

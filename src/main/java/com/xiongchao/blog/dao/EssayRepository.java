@@ -53,4 +53,8 @@ public interface EssayRepository extends JpaRepository<Essay, Integer> {
      */
     @Query(value = "select * FROM essay where id > ?1 AND user_id = ?2 order by id asc limit 1", nativeQuery = true)
     Essay findNextEssay(Integer id, Integer userId);
+
+    Essay findByUserIdAndStatus(Integer userId, Integer status);
+
+    Essay findByUserIdAndPid(Integer userId, Integer pid);
 }

@@ -63,7 +63,11 @@ public class ProjectController {
 
     @GetMapping("findAll")
     @ApiOperation("查询所有")
-    public BaseResult findAll() {
-        return BaseResult.success(projectService.findAllByUserId(2));
+    public BaseResult findAll(@RequestParam(value = "id", required = false) @ApiParam("用户ID，不传查博客开发者") Integer id) {
+        Integer userId = 2;
+        if (id != null) {
+            userId = id;
+        }
+        return BaseResult.success(projectService.findAllByUserId(userId));
     }
 }

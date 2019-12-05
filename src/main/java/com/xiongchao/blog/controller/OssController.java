@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
- * @author William Guo
+ * @author Xiong Chao
  */
 @Api(description = "对象管理", tags = "oss")
 @RestController

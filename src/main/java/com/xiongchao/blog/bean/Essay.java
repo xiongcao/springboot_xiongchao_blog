@@ -48,13 +48,17 @@ public class Essay extends BaseEntity {
     @Column(name = "`rank`", columnDefinition = "int(11) default 0")
     private Integer rank;
 
-    @ApiModelProperty("状态 0：删除 1：正常")
+    @ApiModelProperty("状态 1：公开  2：私密 3：草稿 4: 自序 0：删除")
     @Column(columnDefinition = "int(11) default 1")
     private Integer status;
 
     @ApiModelProperty("用户ID")
     @Column(columnDefinition = "int(11)", nullable = false)
     private Integer userId;
+
+    @ApiModelProperty("转发用到的，原文ID")
+    @Column(columnDefinition = "int(11)")
+    private Integer pid;
 
     public String getTitle() {
         return title;
@@ -142,5 +146,13 @@ public class Essay extends BaseEntity {
 
     public void setDes(String des) {
         this.des = des;
+    }
+
+    public Integer getPid() {
+        return pid;
+    }
+
+    public void setPid(Integer pid) {
+        this.pid = pid;
     }
 }

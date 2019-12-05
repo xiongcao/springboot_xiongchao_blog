@@ -72,6 +72,10 @@ public class CategoryService {
         return categoryRepository.findByIdAndUserId(id, userId);
     }
 
+    public List<Category> findListByEssayId(Integer essayId) {
+        return categoryRepository.findListByEssayId(essayId);
+    }
+
     @Transactional
     public Integer deleteByEssayId(Integer essayId) {
         return essayCategoryMappingRepository.deleteByEssayId(essayId);

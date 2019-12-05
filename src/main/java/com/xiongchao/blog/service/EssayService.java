@@ -170,11 +170,22 @@ public class EssayService {
         return essayRepository.findById(id);
     }
 
-    @Cacheable(value = "findEssayJoinCommentById", key = "#id")
-    public EssayDTO findEssayJoinCommentById(Integer id, Integer adminId) {
-        Optional<Essay> essay0 = findById(id);
+    public EssayDTO findEssayJoinCommentById(Integer id, Integer adminId, Integer status) {
+        Integer userId = 2;
+        if (adminId != null) {
+            userId = adminId;
+        }
+        Essay essay = new Essay();
+        if (id != null) {
+            Optional<Essay> essay0 = findById(id);
+            essay = JSONObject.parseObject(JSON.toJSONString(essay0), Essay.class);
+        } else {
+            essay = essayRepository.findByUserIdAndStatus(userId, status);
+        }
+        if (essay == null) {
+            return null;
+        }
         // 添加浏览记录
-        Essay essay = JSONObject.parseObject(JSON.toJSONString(essay0), Essay.class);
         essay.setBrowseNumber(essay.getBrowseNumber() + 1);
         essayRepository.save(essay);
         EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay), EssayDTO.class);
@@ -207,10 +218,17 @@ public class EssayService {
         Collect collect = null;
         // 是否已点赞
         Star star = null;
+        // 查询是否被转发
+        Boolean forward = false;
         if (adminId != null && adminId != 0) {
             collect = collectService.findByEssayIdAndUserId(essay.getId(), adminId);
             star = starService.findByEssayIdAndUserId(essay.getId(), adminId);
+            Essay essay1 = essayRepository.findByUserIdAndPid(adminId, essay.getId());
+            if (essay1 != null) {
+                forward = true;
+            }
         }
+        essayDTO.setForward(forward);
         essayDTO.setCollect(collect);
         essayDTO.setStar(star);
         return essayDTO;
@@ -259,5 +277,9 @@ public class EssayService {
 
     public Essay findNextEssay(Integer id, Integer userId) {
         return essayRepository.findNextEssay(id, userId);
+    }
+
+    public Essay findByUserIdAndPid(Integer userId, Integer essayId) {
+        return essayRepository.findByUserIdAndPid(userId, essayId);
     }
 }

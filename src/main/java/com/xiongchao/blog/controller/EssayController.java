@@ -1,6 +1,7 @@
 package com.xiongchao.blog.controller;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.xiongchao.blog.DTO.EssayDTO;
 import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.service.CategoryService;
@@ -71,7 +72,7 @@ public class EssayController {
     @ApiOperation("修改状态")
     public BaseResult updateStatus(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                    @ApiParam("ID") @PathVariable("id") Integer id,
-                                   @ApiParam("0:删除;1:正常;") @PathVariable("status") Integer status) {
+                                   @ApiParam("1：公开  2：私密 3：草稿 4: 自序 0：删除") @PathVariable("status") Integer status) {
         Essay essay = essayService.findById(id).orElseThrow(()->new RuntimeException("无此文章"));
         if (null == essay) {
             return BaseResult.failure("该文章不存在或非本人文章");
@@ -101,8 +102,13 @@ public class EssayController {
     public BaseResult findAll(@RequestParam(value = "title", required = false) @ApiParam("文章标题,不传表示查所有") String title,
                               @RequestParam(value = "categoryId", required = false) @ApiParam("类型,不传表示查所有") Integer categoryId,
                               @RequestParam(value = "tagId", required = false) @ApiParam("标签,不传表示查所有") Integer tagId,
+                              @RequestParam(value = "id", required = false) @ApiParam("用户ID，不传查博客开发者") Integer id,
                               BasePage basePage) {
-        return BaseResult.success(essayService.findAllPage(title, categoryId, tagId, 2, 1, basePage));
+        Integer userId = 2;
+        if (id != null) {
+            userId = id;
+        }
+        return BaseResult.success(essayService.findAllPage(title, categoryId, tagId, userId, 1, basePage));
     }
 
     /**
@@ -125,20 +131,54 @@ public class EssayController {
         return BaseResult.success(essayService.findByIdAndUserId(id));
     }
 
-    @GetMapping("detail/{id}")
+    @GetMapping("detail")
     @ApiOperation("前台根据文章id查询文章信息")
-    public BaseResult detail(@ApiParam("ID") @PathVariable("id") Integer id, HttpSession session) {
+    public BaseResult detail(@ApiParam("ID") @RequestParam(value = "id", required = false) Integer id, HttpSession session,
+                             @ApiParam("状态 1：公开  2：私密 3：草稿 4: 自序 0：删除") @RequestParam(value = "status", required = false) Integer status) {
         Object session_adminId = session.getAttribute(Constants.ADMIN_ID);
         Integer adminId = null;
         if (!StringUtils.isEmpty(session_adminId)) {
             adminId = Integer.parseInt(session_adminId.toString());
         }
-        EssayDTO essayDTO = essayService.findEssayJoinCommentById(id, adminId);
+        EssayDTO essayDTO = essayService.findEssayJoinCommentById(id, adminId, status);
+        if (essayDTO == null) {
+            return BaseResult.failure("没有查到此文章");
+        }
         User user = userService.findById(essayDTO.getUserId()).orElseThrow(()-> new RuntimeException("没有查到用户信息"));
         essayDTO.setUser(user);
-        essayDTO.setPreEssay(essayService.findPreEssay(id, essayDTO.getUserId()));
-        essayDTO.setNextEssay(essayService.findNextEssay(id, essayDTO.getUserId()));
+        essayDTO.setPreEssay(essayService.findPreEssay(essayDTO.getId(), essayDTO.getUserId()));
+        essayDTO.setNextEssay(essayService.findNextEssay(essayDTO.getId(), essayDTO.getUserId()));
         return BaseResult.success(essayDTO);
+    }
+
+    @PostMapping("forward/{id}")
+    @ApiOperation("转发")
+    public BaseResult forward(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
+                                   @ApiParam("ID") @PathVariable("id") Integer id) {
+        Essay essay0 = essayService.findByUserIdAndPid(adminId, id);
+        if (essay0 != null) {
+            return BaseResult.failure("你已转发过此文章");
+        }
+        Essay essay = essayService.findById(id).orElseThrow(()->new RuntimeException("无此文章"));
+        if (null == essay) {
+            return BaseResult.failure("该文章不存在或非本人文章");
+        }
+        Essay essay1 = new Essay();
+        essay1.setTitle(essay.getTitle());
+        essay1.setContent(essay.getContent());
+        essay1.setCover(essay.getCover());
+        essay1.setStatus(essay.getStatus());
+        essay1.setUserId(adminId);
+        essay1.setType(1);
+        essay1.setPid(essay.getId());
+        essayService.save(essay);
+        List<Tag> tags = tagService.findListByEssayId(essay.getId());
+        List<Category> categories = categoryService.findListByEssayId(essay.getId());
+        EssayDTO essayDTO = JSONObject.parseObject(JSON.toJSONString(essay1), EssayDTO.class);
+        essayDTO.setTags(tags);
+        essayDTO.setCategorys(categories);
+        essayService.save(essayDTO);
+        return BaseResult.success();
     }
 
 }

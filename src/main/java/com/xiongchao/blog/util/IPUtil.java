@@ -5,7 +5,7 @@ import org.springframework.util.StringUtils;
 import javax.servlet.http.HttpServletRequest;
 
 /**
- * @author William Guo
+ * @author Xiong Chao
  */
 public class IPUtil {
 

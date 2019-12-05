@@ -8,7 +8,7 @@ import org.springframework.data.domain.Sort;
 /**
  * 分页模型
  *
- * @author William Guo
+ * @author Xiong Chao
  */
 public class BasePage {
 

@@ -24,6 +24,8 @@ public class EssayDTO extends Essay {
 
     private Essay nextEssay;
 
+    private Boolean forward; // 此文章是否已被当前用户转发
+
     public List<CommentDTO> getCommentDTOS() {
         return commentDTOS;
     }
@@ -94,5 +96,13 @@ public class EssayDTO extends Essay {
 
     public void setNextEssay(Essay nextEssay) {
         this.nextEssay = nextEssay;
+    }
+
+    public Boolean getForward() {
+        return forward;
+    }
+
+    public void setForward(Boolean forward) {
+        this.forward = forward;
     }
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * @author William Guo
+ * @author Xiong Chao
  */
 @Service
 @FeignClient(name = "sms", url = "http://www.wemediacn.net/webservice/smsservice.asmx")

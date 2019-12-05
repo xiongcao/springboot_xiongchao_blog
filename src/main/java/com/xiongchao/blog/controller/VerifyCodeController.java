@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author William Guo
+ * @author Xiong Chao
  */
 @Api(description = "验证码", tags = "verifyCode")
 @RestController

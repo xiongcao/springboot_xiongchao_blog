@@ -15,7 +15,7 @@ import java.util.Date;
 /**
  * 关系型数据库基本实体类
  *
- * @author William Guo
+ * @author Xiong Chao
  */
 @ApiModel()
 @MappedSuperclass
