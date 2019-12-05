@@ -6,6 +6,7 @@ import com.xiongchao.blog.DTO.CommentDTO;
 import com.xiongchao.blog.bean.*;
 import com.xiongchao.blog.service.CommentService;
 import com.xiongchao.blog.service.EssayService;
+import com.xiongchao.blog.service.StarService;
 import com.xiongchao.blog.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -37,6 +38,9 @@ public class CommentController {
     @Autowired
     private EssayService essayService;
 
+    @Autowired
+    private StarService starService;
+
     @PostMapping("save")
     @ApiOperation("保存评论")
     public BaseResult save(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
@@ -54,19 +58,28 @@ public class CommentController {
     public BaseResult addLikes(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                @RequestParam(value = "id", required = false) @ApiParam("评论ID") Integer id) {
         Comment comment = commentService.findById(id).orElseThrow(()-> new RuntimeException("没有此评论"));
-        if (comment.getLikeFlag() == 0 && comment.getDislikeFlag() == 0) { // 未点赞、未踩—>执行点赞
-            comment.setLikeFlag(1);
+        Star star = starService.findByCommentIdAndUserId(id, adminId);
+        if (star == null) { // 未点赞、未踩-> 添加点赞数据
+            star = new Star();
+            star.setUserId(adminId);
+            star.setCommentId(id);
+            star.setCommentLikeStatus(1);
+            starService.save(star);
             comment.setLikes(comment.getLikes() + 1);
-        } else if (comment.getDislikeFlag() == 1) { // 踩了-> 取消踩，执行点赞
-            comment.setLikeFlag(1);
-            comment.setLikes(comment.getLikes() + 1);
-            comment.setDislikes(comment.getDislikes() - 1);
-            comment.setDislikeFlag(0);
-        } else { // 已点赞->取消点赞
-            comment.setLikeFlag(0);
-            comment.setLikes(comment.getLikes() - 1);
+        } else {
+            Integer commentLikeStatus = star.getCommentLikeStatus(); // 1: 已赞 0: 踩 -1: 未点赞、未踩
+            if (commentLikeStatus == 0) { // 已踩了-> 取消踩，执行点赞
+                star.setCommentLikeStatus(1);
+                comment.setLikes(comment.getLikes() + 1);
+                comment.setDislikes(comment.getDislikes() - 1);
+            } else if (commentLikeStatus == 1) { // 已点赞->取消点赞
+                star.setCommentLikeStatus(-1);
+                comment.setLikes(comment.getLikes() -1);
+            } else { // 未点赞、未踩->执行点赞
+                star.setCommentLikeStatus(1);
+                comment.setLikes(comment.getLikes() + 1);
+            }
         }
-
         commentService.save(comment);
         return BaseResult.success();
     }
@@ -77,18 +90,28 @@ public class CommentController {
     public BaseResult addDislikes(@ApiIgnore @SessionAttribute(Constants.ADMIN_ID) Integer adminId,
                                   @RequestParam(value = "id", required = false) @ApiParam("评论ID") Integer id) {
         Comment comment = commentService.findById(id).orElseThrow(()-> new RuntimeException("没有此评论"));
-        if (comment.getDislikeFlag() == 0 && comment.getLikeFlag() == 0) { // 未点赞、未踩—>执行踩踩
-            comment.setDislikeFlag(1);
+        Star star = starService.findByCommentIdAndUserId(id, adminId);
+        if (star == null) { // 未点赞、未踩-> 添加踩踩数据
+            star = new Star();
+            star.setUserId(adminId);
+            star.setCommentId(id);
+            star.setCommentLikeStatus(0);
             comment.setDislikes(comment.getDislikes() + 1);
-        } else if (comment.getLikeFlag() == 1) { // // 点赞-> 取消点赞，执行踩
-            comment.setLikeFlag(0);
-            comment.setLikes(comment.getLikes() - 1);
-            comment.setDislikes(comment.getDislikes() + 1);
-            comment.setDislikeFlag(1);
-        } else { // 已踩->取消踩
-            comment.setDislikeFlag(0);
-            comment.setDislikes(comment.getDislikes() - 1);
+        } else {
+            Integer commentLikeStatus = star.getCommentLikeStatus(); // 1: 已赞 0: 踩 -1: 未点赞、未踩
+            if (commentLikeStatus == 1) { // 已点赞-> 取消点赞，执行踩
+                star.setCommentLikeStatus(0);
+                comment.setLikes(comment.getLikes() - 1);
+                comment.setDislikes(comment.getDislikes() + 1);
+            } else if (commentLikeStatus == 0) { // 已踩->取消踩
+                star.setCommentLikeStatus(-1);
+                comment.setDislikes(comment.getDislikes() - 1);
+            } else { // 未点赞、未踩->执行踩
+                star.setCommentLikeStatus(0);
+                comment.setDislikes(comment.getDislikes() + 1);
+            }
         }
+        starService.save(star);
         commentService.save(comment);
         return BaseResult.success();
     }
@@ -141,6 +164,13 @@ public class CommentController {
             // 查询被评论者
             User toUser = userService.findById(comment.getToUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
             commentDTO.setUser(user);
+            // 查询评论是否点赞
+            Star star = starService.findByCommentIdAndUserId(comment.getId(), adminId);
+            if (star != null) {
+                commentDTO.setCommentLikeStatus(star.getCommentLikeStatus());
+            } else {
+                commentDTO.setCommentLikeStatus(-1);
+            }
             commentDTO.setToUser(toUser);
             commentDTOS.add(commentDTO);
         }

@@ -17,6 +17,8 @@ public class CommentDTO extends Comment {
 
     private User toUser; // 被评论者
 
+    private Integer commentLikeStatus; // 点赞状态：1: 已赞 0: 踩 -1: 未点赞、未踩
+
     public String getTitle() {
         return title;
     }
@@ -63,5 +65,13 @@ public class CommentDTO extends Comment {
 
     public void setToUser(User toUser) {
         this.toUser = toUser;
+    }
+
+    public Integer getCommentLikeStatus() {
+        return commentLikeStatus;
+    }
+
+    public void setCommentLikeStatus(Integer commentLikeStatus) {
+        this.commentLikeStatus = commentLikeStatus;
     }
 }

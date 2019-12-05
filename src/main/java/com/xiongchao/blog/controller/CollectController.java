@@ -81,7 +81,7 @@ public class CollectController {
             CollectDTO collectDTO = JSONObject.parseObject(JSON.toJSONString(collect), CollectDTO.class);
             Essay essay = essayService.findById(collect.getEssayId()).orElseThrow(() ->  new RuntimeException("文章不存在"));
             collectDTO.setTitle(essay.getTitle());
-            User user = userService.findById(collect.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
+            User user = userService.findById(essay.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
             collectDTO.setName(user.getName());
             collectDTO.setNickname(user.getNickname());
             collectDTO.setRemark(user.getIntroduce());

@@ -18,4 +18,6 @@ public interface StarRepository extends JpaRepository<Star, Integer> {
     List<Star> findAllByUserId(Integer userId);
 
     Star findByEssayIdAndUserId(Integer essayId, Integer userId);
+
+    Star findByCommentIdAndUserId(Integer commentId, Integer userId);
 }

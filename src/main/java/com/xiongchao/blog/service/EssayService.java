@@ -191,6 +191,13 @@ public class EssayService {
             User user = userService.findById(comment.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
             // 查询被评论者
             User toUser = userService.findById(comment.getToUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
+            // 查询评论是否点赞
+            Star star = starService.findByCommentIdAndUserId(comment.getId(), adminId);
+            if (star != null) {
+                commentDTO.setCommentLikeStatus(star.getCommentLikeStatus());
+            } else {
+                commentDTO.setCommentLikeStatus(-1);
+            }
             commentDTO.setUser(user);
             commentDTO.setToUser(toUser);
             commentDTOS.add(commentDTO);

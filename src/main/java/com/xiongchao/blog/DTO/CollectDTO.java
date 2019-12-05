@@ -4,13 +4,13 @@ import com.xiongchao.blog.bean.Collect;
 
 public class CollectDTO extends Collect {
 
-    private String title;
+    private String title; // 文章标题
 
-    private String name;
+    private String name; // 作者账号名
 
-    private String nickname;
+    private String nickname; // 作者昵称
 
-    private String remark;
+    private String remark; // 备注
 
     public String getTitle() {
         return title;

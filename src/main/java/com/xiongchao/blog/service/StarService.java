@@ -35,5 +35,9 @@ public class StarService {
         return starRepository.findByEssayIdAndUserId(essayId, userId);
     }
 
+    public Star findByCommentIdAndUserId(Integer commentId, Integer userId) {
+        return starRepository.findByCommentIdAndUserId(commentId, userId);
+    }
+
 
 }

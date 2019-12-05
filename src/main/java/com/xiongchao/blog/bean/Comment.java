@@ -48,14 +48,6 @@ public class Comment extends BaseEntity {
     @Column(columnDefinition = "int(11) default 0")
     private Integer dislikes;
 
-    @ApiModelProperty("是否已点赞 1:已点赞 0: 未点赞")
-    @Column(columnDefinition = "int(11) default 0")
-    private Integer likeFlag;
-
-    @ApiModelProperty("是否已踩 1:已踩 0: 未踩")
-    @Column(columnDefinition = "int(11) default 0")
-    private Integer dislikeFlag;
-
 
     public String getContent() {
         return content;
@@ -119,21 +111,5 @@ public class Comment extends BaseEntity {
 
     public void setDislikes(Integer dislikes) {
         this.dislikes = dislikes;
-    }
-
-    public Integer getLikeFlag() {
-        return likeFlag;
-    }
-
-    public void setLikeFlag(Integer likeFlag) {
-        this.likeFlag = likeFlag;
-    }
-
-    public Integer getDislikeFlag() {
-        return dislikeFlag;
-    }
-
-    public void setDislikeFlag(Integer dislikeFlag) {
-        this.dislikeFlag = dislikeFlag;
     }
 }

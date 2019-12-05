@@ -79,7 +79,7 @@ public class StarController {
             CollectDTO collectDTO = JSONObject.parseObject(JSON.toJSONString(star), CollectDTO.class);
             Essay essay = essayService.findById(star.getEssayId()).orElseThrow(() ->  new RuntimeException("文章不存在"));
             collectDTO.setTitle(essay.getTitle());
-            User user = userService.findById(star.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
+            User user = userService.findById(essay.getUserId()).orElseThrow(() ->  new RuntimeException("用户不存在"));
             collectDTO.setName(user.getName());
             collectDTO.setNickname(user.getNickname());
             collectDTO.setRemark(user.getIntroduce());
