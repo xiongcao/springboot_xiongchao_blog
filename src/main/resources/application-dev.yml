@@ -1,0 +1,19 @@
+server:
+  port: 8899
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/xiongchao_blog?serverTimezone=GMT%2B8
+    username: root
+    password: 12345678
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+oss:
+  endpoint: http://342424.com
+  accessKeyId: SALKDFJLADFASLDF
+  accessKeySecret: AASLKDFJLKSAJFLKSFJKASDF
+  bucketName: flerken-manage
+swagger:
+  enable: true

@@ -1,0 +1,29 @@
+server:
+#  port: 443
+  port: 81
+#  ssl:
+#    key-store: classpath:cert-prod/2194254.pfx
+#    key-store-password: AVW4nEqb
+#    key-store-type: PKCS12
+  ssl:
+    key-store: /project/cwsoy.com.jks
+    key-store-password: 0kblb87w777032
+    server.ssl.keyStoreType: JKS
+    server.ssl.keyAlias: 1
+spring:
+  profiles: prod
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/xiongchao_blog?characterEncoding=utf-8&useSSL=false
+    username: root
+    password: 123456
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+oss:
+  endpoint: http://342424.com
+  accessKeyId: SALKDFJLADFASLDF
+  accessKeySecret: AASLKDFJLKSAJFLKSFJKASDF
+  bucketName: flerken
+swagger:
+  enable: false
